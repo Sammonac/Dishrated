@@ -2,25 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563EB">
+    <meta name="description" content="Track and rate your culinary adventures with FlavorScore">
     
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#2563EB">
-    <meta name="description" content="Track and rate your culinary adventures">
+    <link rel="manifest" href="./manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="FlavorScore">
-    <meta name="application-name" content="FlavorScore">
-    <meta name="msapplication-TileColor" content="#2563EB">
-    
-    <!-- Link to manifest -->
-    <link rel="manifest" href="./manifest.json">
-    
-    <!-- iOS Icon Support -->
-    <link rel="apple-touch-icon" href="./icons/icon-192x192.png">
     
     <title>FlavorScore - Track Your Culinary Adventures</title>
-    
     <style>
         * {
             margin: 0;
@@ -31,6 +23,12 @@
         :root {
             --primary: #2563EB;
             --primary-dark: #1D4ED8;
+            --dark-green: #065F46;
+            --green: #10B981;
+            --light-green: #34D399;
+            --yellow: #F59E0B;
+            --orange: #F97316;
+            --red: #EF4444;
             --gray-50: #F9FAFB;
             --gray-100: #F3F4F6;
             --gray-200: #E5E7EB;
@@ -122,6 +120,12 @@
             margin-bottom: 20px;
         }
 
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
         label {
             display: block;
             margin-bottom: 5px;
@@ -157,6 +161,39 @@
         textarea {
             resize: vertical;
             min-height: 100px;
+        }
+
+        .score-display {
+            background: var(--gray-50);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .final-score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .breakdown-item {
+            text-align: center;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .image-upload {
@@ -321,6 +358,32 @@
             font-size: 0.85rem;
         }
 
+        .meal-factors {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .factor-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .factor-icon {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+        }
+
         .meal-notes {
             color: var(--gray-600);
             font-size: 0.95rem;
@@ -395,6 +458,28 @@
             margin-bottom: 20px;
         }
 
+        .modal-score-display {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-final-score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .modal-breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
         .close-btn {
             background: none;
             border: none;
@@ -403,23 +488,50 @@
             color: var(--gray-500);
         }
 
-        .install-prompt {
-            display: none;
+        /* PWA Install Banner */
+        .install-banner {
             position: fixed;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            padding: 15px 20px;
+            left: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 15px;
             border-radius: 8px;
             box-shadow: var(--shadow-lg);
+            display: none;
+            align-items: center;
+            gap: 15px;
             z-index: 1000;
-            max-width: 90%;
-            text-align: center;
         }
 
-        .install-prompt.show {
-            display: block;
+        .install-banner.show {
+            display: flex;
+        }
+
+        .install-text {
+            flex: 1;
+        }
+
+        .install-btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .install-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
         }
 
         @media (max-width: 768px) {
@@ -434,14 +546,65 @@
             .meals-grid {
                 grid-template-columns: 1fr;
             }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .score-breakdown {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .modal-breakdown {
+                grid-template-columns: 1fr;
+            }
+
+            .install-banner {
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+            }
         }
 
         .hidden {
             display: none;
         }
+
+        .offline-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #f59e0b;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 0.9rem;
+            z-index: 1001;
+            display: none;
+        }
+
+        .offline-indicator.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
+    <!-- Offline Indicator -->
+    <div id="offlineIndicator" class="offline-indicator">
+        📱 You're offline - changes will sync when you reconnect
+    </div>
+
+    <!-- Install Banner -->
+    <div id="installBanner" class="install-banner">
+        <div class="install-text">
+            <strong>Install FlavorScore</strong><br>
+            Get the full app experience!
+        </div>
+        <button id="installBtn" class="install-btn">Install</button>
+        <button id="installClose" class="install-close">&times;</button>
+    </div>
+
     <header>
         <div class="container">
             <h1>FlavorScore</h1>
@@ -492,9 +655,53 @@
                         <input type="text" id="mealName" required placeholder="e.g., Grandma's Lasagna">
                     </div>
 
+                    <!-- Score Calculation Section -->
                     <div class="form-group">
-                        <label for="mealScore">Score (0-100) *</label>
-                        <input type="number" id="mealScore" min="0" max="100" required placeholder="75">
+                        <label>Score Factors</label>
+                        <div class="form-row">
+                            <div>
+                                <label for="healthScore">Health (0-100)</label>
+                                <input type="number" id="healthScore" min="0" max="100" value="50" placeholder="85">
+                            </div>
+                            <div>
+                                <label for="tasteScore">Taste (0-100)</label>
+                                <input type="number" id="tasteScore" min="0" max="100" value="50" placeholder="92">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                <label for="timeMinutes">Time (minutes)</label>
+                                <input type="number" id="timeMinutes" min="0" value="30" placeholder="25">
+                            </div>
+                            <div>
+                                <label for="costDollars">Cost ($)</label>
+                                <input type="number" id="costDollars" min="0" step="0.01" value="10" placeholder="14.00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calculated Score Display -->
+                    <div class="score-display" id="scoreDisplay">
+                        <div class="final-score" id="finalScore">0</div>
+                        <div>FlavorScore</div>
+                        <div class="score-breakdown" id="scoreBreakdown">
+                            <div class="breakdown-item" id="healthBreakdown">
+                                <div>Health</div>
+                                <div id="healthValue">0</div>
+                            </div>
+                            <div class="breakdown-item" id="tasteBreakdown">
+                                <div>Taste</div>
+                                <div id="tasteValue">0</div>
+                            </div>
+                            <div class="breakdown-item" id="timeBreakdown">
+                                <div>Time</div>
+                                <div id="timeValue">0 min</div>
+                            </div>
+                            <div class="breakdown-item" id="costBreakdown">
+                                <div>Cost</div>
+                                <div id="costValue">$0</div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -542,7 +749,30 @@
             </div>
             <div class="modal-body">
                 <img id="modalImage" class="modal-image" alt="Meal">
-                <p><strong>Score:</strong> <span id="modalScore"></span>/100</p>
+                
+                <div class="modal-score-display">
+                    <div class="modal-final-score" id="modalFinalScore">0</div>
+                    <div>FlavorScore</div>
+                    <div class="modal-breakdown" id="modalBreakdown">
+                        <div class="breakdown-item" id="modalHealthBreakdown">
+                            <div>Health</div>
+                            <div id="modalHealthValue">0</div>
+                        </div>
+                        <div class="breakdown-item" id="modalTasteBreakdown">
+                            <div>Taste</div>
+                            <div id="modalTasteValue">0</div>
+                        </div>
+                        <div class="breakdown-item" id="modalTimeBreakdown">
+                            <div>Time</div>
+                            <div id="modalTimeValue">0 min</div>
+                        </div>
+                        <div class="breakdown-item" id="modalCostBreakdown">
+                            <div>Cost</div>
+                            <div id="modalCostValue">$0</div>
+                        </div>
+                    </div>
+                </div>
+
                 <p><strong>Type:</strong> <span id="modalType"></span></p>
                 <p><strong>Date:</strong> <span id="modalDate"></span></p>
                 <div id="modalNotesContainer" class="hidden">
@@ -553,53 +783,167 @@
         </div>
     </div>
 
-    <!-- Install Prompt -->
-    <div id="installPrompt" class="install-prompt">
-        <p>Install FlavorScore for easy access!</p>
-        <button class="btn btn-primary" id="installBtn">Install</button>
-        <button class="btn btn-secondary" onclick="hideInstallPrompt()">Not Now</button>
-    </div>
-
     <script>
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(registration => console.log('ServiceWorker registered'))
-                    .catch(err => console.log('ServiceWorker registration failed:', err));
-            });
-        }
-
-        // PWA Install Prompt
-        let deferredPrompt;
-        const installPrompt = document.getElementById('installPrompt');
-        const installBtn = document.getElementById('installBtn');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installPrompt.classList.add('show');
-        });
-
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to the install prompt: ${outcome}`);
-                deferredPrompt = null;
-                hideInstallPrompt();
-            }
-        });
-
-        function hideInstallPrompt() {
-            installPrompt.classList.remove('show');
-        }
-
         // Global variables
         let meals = [];
         let currentFilter = 'all';
         let editingMealId = null;
         let currentImageData = null;
+        let deferredPrompt;
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then((registration) => {
+                        console.log('ServiceWorker registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('ServiceWorker registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // PWA Install Functionality
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallBanner();
+        });
+
+        function showInstallBanner() {
+            const banner = document.getElementById('installBanner');
+            const hasSeenBanner = localStorage.getItem('flavorscoreInstallBannerSeen');
+            
+            if (!hasSeenBanner) {
+                banner.classList.add('show');
+            }
+        }
+
+        document.getElementById('installBtn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+                hideInstallBanner();
+            }
+        });
+
+        document.getElementById('installClose').addEventListener('click', () => {
+            hideInstallBanner();
+            localStorage.setItem('flavorscoreInstallBannerSeen', 'true');
+        });
+
+        function hideInstallBanner() {
+            document.getElementById('installBanner').classList.remove('show');
+        }
+
+        // Online/Offline Detection
+        function updateOnlineStatus() {
+            const offlineIndicator = document.getElementById('offlineIndicator');
+            if (navigator.onLine) {
+                offlineIndicator.classList.remove('show');
+            } else {
+                offlineIndicator.classList.add('show');
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
+
+        // Stricter color functions for metrics
+        function getHealthTasteColor(score) {
+            if (score >= 90) return '#065F46'; // Dark Green (elite)
+            if (score >= 80) return '#10B981'; // Green (very good)
+            if (score >= 70) return '#34D399'; // Light Green (decent)
+            if (score >= 60) return '#F59E0B'; // Yellow (meh)
+            if (score >= 40) return '#F97316'; // Orange (poor)
+            return '#EF4444'; // Red (bad)
+        }
+
+        function getTimeColor(minutes) {
+            if (minutes <= 10) return '#065F46'; // Dark Green (super fast)
+            if (minutes <= 20) return '#10B981'; // Green
+            if (minutes <= 30) return '#34D399'; // Light Green
+            if (minutes <= 45) return '#F59E0B'; // Yellow
+            if (minutes <= 60) return '#F97316'; // Orange
+            return '#EF4444'; // Red
+        }
+
+        function getCostColor(dollars) {
+            if (dollars <= 4) return '#065F46'; // Dark Green (super cheap)
+            if (dollars <= 7) return '#10B981'; // Green
+            if (dollars <= 10) return '#34D399'; // Light Green
+            if (dollars <= 14) return '#F59E0B'; // Yellow
+            if (dollars <= 20) return '#F97316'; // Orange
+            return '#EF4444'; // Red
+        }
+
+        // Score Calculation Functions
+        function calculateTimeScore(minutes) {
+            // Convert time to score for formula calculation
+            const timeScore = Math.max(0, 100 - (minutes * 2));
+            return timeScore;
+        }
+
+        function calculateCostScore(dollars) {
+            // Convert cost to score for formula calculation
+            const costScore = Math.max(0, 100 - (dollars * 5));
+            return costScore;
+        }
+
+        function calculateFlavorScore(health, taste, timeMinutes, costDollars) {
+            const timeScore = calculateTimeScore(timeMinutes);
+            const costScore = calculateCostScore(costDollars);
+            
+            // Updated formula: Taste 40%, Health 35%, Time 15%, Cost 10%
+            const flavorScore = Math.round(
+                (health * 0.35) + 
+                (taste * 0.40) + 
+                (timeScore * 0.15) + 
+                (costScore * 0.10)
+            );
+            
+            return {
+                final: flavorScore,
+                health: health,
+                taste: taste,
+                time: timeMinutes,
+                cost: costDollars,
+                timeScore: timeScore,
+                costScore: costScore
+            };
+        }
+
+        function updateScoreDisplay() {
+            const health = parseInt(document.getElementById('healthScore').value) || 0;
+            const taste = parseInt(document.getElementById('tasteScore').value) || 0;
+            const timeMinutes = parseInt(document.getElementById('timeMinutes').value) || 0;
+            const costDollars = parseFloat(document.getElementById('costDollars').value) || 0;
+            
+            const scores = calculateFlavorScore(health, taste, timeMinutes, costDollars);
+            
+            // Update values
+            document.getElementById('finalScore').textContent = scores.final;
+            document.getElementById('healthValue').textContent = health;
+            document.getElementById('tasteValue').textContent = taste;
+            document.getElementById('timeValue').textContent = timeMinutes + ' min';
+            document.getElementById('costValue').textContent = '$' + costDollars.toFixed(2);
+            
+            // Update colors
+            document.getElementById('healthBreakdown').style.backgroundColor = getHealthTasteColor(health);
+            document.getElementById('tasteBreakdown').style.backgroundColor = getHealthTasteColor(taste);
+            document.getElementById('timeBreakdown').style.backgroundColor = getTimeColor(timeMinutes);
+            document.getElementById('costBreakdown').style.backgroundColor = getCostColor(costDollars);
+        }
+
+        // Add event listeners for real-time score updates
+        document.getElementById('healthScore').addEventListener('input', updateScoreDisplay);
+        document.getElementById('tasteScore').addEventListener('input', updateScoreDisplay);
+        document.getElementById('timeMinutes').addEventListener('input', updateScoreDisplay);
+        document.getElementById('costDollars').addEventListener('input', updateScoreDisplay);
 
         // Load meals from localStorage
         function loadMeals() {
@@ -607,6 +951,23 @@
             if (stored) {
                 try {
                     meals = JSON.parse(stored);
+                    // Migrate old single-score format to new multi-factor format
+                    meals = meals.map(meal => {
+                        if (typeof meal.score === 'number' && !meal.health) {
+                            // Old format - convert to new format with default values
+                            return {
+                                ...meal,
+                                health: Math.max(0, Math.min(100, meal.score)),
+                                taste: Math.max(0, Math.min(100, meal.score)),
+                                time: 30,
+                                cost: 10,
+                                finalScore: meal.score
+                            };
+                        }
+                        return meal;
+                    });
+                    saveMeals(); // Save migrated data
+                    console.log('Meals loaded successfully:', meals.length);
                 } catch (e) {
                     console.error('Error loading meals:', e);
                     meals = [];
@@ -618,9 +979,10 @@
         function saveMeals() {
             try {
                 localStorage.setItem('flavorscoreMeals', JSON.stringify(meals));
+                console.log('Meals saved successfully:', meals.length);
             } catch (e) {
-                alert('Error saving data. Storage might be full.');
                 console.error('Storage error:', e);
+                alert('Error saving data. Storage might be full.');
             }
         }
 
@@ -666,37 +1028,49 @@
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    // Create canvas for resizing
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    // Calculate new size (max 800px)
-                    let width = img.width;
-                    let height = img.height;
-                    const maxSize = 800;
-                    
-                    if (width > height && width > maxSize) {
-                        height = (height * maxSize) / width;
-                        width = maxSize;
-                    } else if (height > maxSize) {
-                        width = (width * maxSize) / height;
-                        height = maxSize;
+                    try {
+                        // Create canvas for resizing
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Calculate new size (max 800px)
+                        let width = img.width;
+                        let height = img.height;
+                        const maxSize = 800;
+                        
+                        if (width > height && width > maxSize) {
+                            height = (height * maxSize) / width;
+                            width = maxSize;
+                        } else if (height > maxSize) {
+                            width = (width * maxSize) / height;
+                            height = maxSize;
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Convert to base64
+                        currentImageData = canvas.toDataURL('image/jpeg', 0.8);
+                        
+                        // Show preview
+                        imagePreview.src = currentImageData;
+                        imagePreview.style.display = 'block';
+                        uploadText.style.display = 'none';
+                        imageUpload.classList.add('has-image');
+                        
+                        console.log('Image processed successfully');
+                    } catch (error) {
+                        console.error('Error processing image:', error);
+                        alert('Error processing image. Please try another file.');
                     }
-                    
-                    canvas.width = width;
-                    canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    // Convert to base64
-                    currentImageData = canvas.toDataURL('image/jpeg', 0.8);
-                    
-                    // Show preview
-                    imagePreview.src = currentImageData;
-                    imagePreview.style.display = 'block';
-                    uploadText.style.display = 'none';
-                    imageUpload.classList.add('has-image');
                 };
                 img.src = e.target.result;
+            };
+            
+            reader.onerror = function() {
+                console.error('Error reading file');
+                alert('Error reading file. Please try again.');
             };
             
             reader.readAsDataURL(file);
@@ -710,19 +1084,54 @@
             e.preventDefault();
             
             const name = document.getElementById('mealName').value.trim();
-            const score = parseInt(document.getElementById('mealScore').value);
+            const health = parseInt(document.getElementById('healthScore').value);
+            const taste = parseInt(document.getElementById('tasteScore').value);
+            const timeMinutes = parseInt(document.getElementById('timeMinutes').value);
+            const costDollars = parseFloat(document.getElementById('costDollars').value);
             const type = document.getElementById('mealType').value;
             const notes = document.getElementById('mealNotes').value.trim();
             
-            if (!name || isNaN(score)) {
-                alert('Please fill in all required fields');
+            // Validation
+            if (!name) {
+                alert('Please enter a dish name');
                 return;
             }
+            
+            if (isNaN(health) || health < 0 || health > 100) {
+                alert('Health score must be between 0 and 100');
+                return;
+            }
+            
+            if (isNaN(taste) || taste < 0 || taste > 100) {
+                alert('Taste score must be between 0 and 100');
+                return;
+            }
+            
+            if (isNaN(timeMinutes) || timeMinutes < 0) {
+                alert('Time must be a positive number');
+                return;
+            }
+            
+            if (isNaN(costDollars) || costDollars < 0) {
+                alert('Cost must be a positive number');
+                return;
+            }
+            
+            if (!type) {
+                alert('Please select a meal type');
+                return;
+            }
+            
+            const scores = calculateFlavorScore(health, taste, timeMinutes, costDollars);
             
             const meal = {
                 id: editingMealId || Date.now(),
                 name,
-                score,
+                health,
+                taste,
+                time: timeMinutes,
+                cost: costDollars,
+                finalScore: scores.final,
                 type,
                 notes,
                 image: currentImageData || createDefaultImage(),
@@ -731,16 +1140,22 @@
                     new Date().toISOString()
             };
             
+            console.log('Saving meal:', meal);
+            
             if (editingMealId) {
                 const index = meals.findIndex(m => m.id === editingMealId);
-                meals[index] = meal;
+                if (index !== -1) {
+                    meals[index] = meal;
+                    console.log('Meal updated at index:', index);
+                }
                 editingMealId = null;
             } else {
                 meals.push(meal);
+                console.log('New meal added');
             }
             
-            // Sort by score
-            meals.sort((a, b) => b.score - a.score);
+            // Sort by final score (highest first)
+            meals.sort((a, b) => b.finalScore - a.finalScore);
             
             saveMeals();
             resetForm();
@@ -762,6 +1177,13 @@
             document.getElementById('formTitle').textContent = 'Add New Meal';
             document.getElementById('submitBtn').textContent = 'Add Meal';
             cancelBtn.classList.add('hidden');
+            
+            // Reset to default values
+            document.getElementById('healthScore').value = 50;
+            document.getElementById('tasteScore').value = 50;
+            document.getElementById('timeMinutes').value = 30;
+            document.getElementById('costDollars').value = 10;
+            updateScoreDisplay();
         }
 
         // Create default image
@@ -819,11 +1241,29 @@
                     <div class="meal-info">
                         <div class="meal-header">
                             <h3 class="meal-name">${escapeHtml(meal.name)}</h3>
-                            <span class="meal-score">${meal.score}</span>
+                            <span class="meal-score">${meal.finalScore}</span>
                         </div>
                         <div class="meal-meta">
                             <span class="meal-type">${meal.type}</span>
                             <span>${formatDate(meal.date)}</span>
+                        </div>
+                        <div class="meal-factors">
+                            <div class="factor-item" style="background-color: ${getHealthTasteColor(meal.health)}">
+                                <div class="factor-icon"></div>
+                                Health ${meal.health}
+                            </div>
+                            <div class="factor-item" style="background-color: ${getHealthTasteColor(meal.taste)}">
+                                <div class="factor-icon"></div>
+                                Taste ${meal.taste}
+                            </div>
+                            <div class="factor-item" style="background-color: ${getTimeColor(meal.time)}">
+                                <div class="factor-icon"></div>
+                                ${meal.time} min
+                            </div>
+                            <div class="factor-item" style="background-color: ${getCostColor(meal.cost)}">
+                                <div class="factor-icon"></div>
+                                $${meal.cost.toFixed(2)}
+                            </div>
                         </div>
                         ${meal.notes ? `<p class="meal-notes">${escapeHtml(meal.notes)}</p>` : ''}
                         <div class="meal-actions" onclick="event.stopPropagation()">
@@ -845,11 +1285,11 @@
             
             if (filteredMeals.length > 0) {
                 const avgScore = Math.round(
-                    filteredMeals.reduce((sum, m) => sum + m.score, 0) / filteredMeals.length
+                    filteredMeals.reduce((sum, m) => sum + m.finalScore, 0) / filteredMeals.length
                 );
                 document.getElementById('avgScore').textContent = avgScore;
                 
-                const best = filteredMeals.reduce((best, m) => m.score > best.score ? m : best);
+                const best = filteredMeals.reduce((best, m) => m.finalScore > best.finalScore ? m : best);
                 document.getElementById('bestMeal').textContent = 
                     best.name.length > 15 ? best.name.substring(0, 15) + '...' : best.name;
             } else {
@@ -865,7 +1305,10 @@
             
             editingMealId = id;
             document.getElementById('mealName').value = meal.name;
-            document.getElementById('mealScore').value = meal.score;
+            document.getElementById('healthScore').value = meal.health;
+            document.getElementById('tasteScore').value = meal.taste;
+            document.getElementById('timeMinutes').value = meal.time;
+            document.getElementById('costDollars').value = meal.cost;
             document.getElementById('mealType').value = meal.type;
             document.getElementById('mealNotes').value = meal.notes || '';
             
@@ -881,6 +1324,7 @@
             document.getElementById('submitBtn').textContent = 'Update Meal';
             cancelBtn.classList.remove('hidden');
             
+            updateScoreDisplay();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -901,7 +1345,18 @@
             
             document.getElementById('modalTitle').textContent = meal.name;
             document.getElementById('modalImage').src = meal.image;
-            document.getElementById('modalScore').textContent = meal.score;
+            document.getElementById('modalFinalScore').textContent = meal.finalScore;
+            document.getElementById('modalHealthValue').textContent = meal.health;
+            document.getElementById('modalTasteValue').textContent = meal.taste;
+            document.getElementById('modalTimeValue').textContent = meal.time + ' min';
+            document.getElementById('modalCostValue').textContent = '$' + meal.cost.toFixed(2);
+            
+            // Update modal colors
+            document.getElementById('modalHealthBreakdown').style.backgroundColor = getHealthTasteColor(meal.health);
+            document.getElementById('modalTasteBreakdown').style.backgroundColor = getHealthTasteColor(meal.taste);
+            document.getElementById('modalTimeBreakdown').style.backgroundColor = getTimeColor(meal.time);
+            document.getElementById('modalCostBreakdown').style.backgroundColor = getCostColor(meal.cost);
+            
             document.getElementById('modalType').textContent = meal.type;
             document.getElementById('modalDate').textContent = new Date(meal.date).toLocaleDateString();
             
@@ -944,6 +1399,7 @@
         loadMeals();
         renderMeals();
         updateStats();
+        updateScoreDisplay();
     </script>
 </body>
 </html>
