@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#2563EB">
-    <meta name="description" content="Track and rate your culinary adventures with FlavorScore">
+    <meta name="description" content="Track and rate your culinary adventures with Dishrated">
     
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="./manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="FlavorScore">
+    <meta name="apple-mobile-web-app-title" content="Dishrated">
     
-    <title>FlavorScore - Track Your Culinary Adventures</title>
+    <title>Dishrated - Track Your Culinary Adventures</title>
     <style>
         * {
             margin: 0;
@@ -23,12 +23,12 @@
         :root {
             --primary: #2563EB;
             --primary-dark: #1D4ED8;
-            --dark-green: #065F46;
-            --green: #10B981;
-            --light-green: #34D399;
-            --yellow: #F59E0B;
-            --orange: #F97316;
-            --red: #EF4444;
+            --metric-dark-green: #065F46;
+            --metric-green: #10B981;
+            --metric-light-green: #34D399;
+            --metric-yellow: #F59E0B;
+            --metric-orange: #F97316;
+            --metric-red: #EF4444;
             --gray-50: #F9FAFB;
             --gray-100: #F3F4F6;
             --gray-200: #E5E7EB;
@@ -63,6 +63,12 @@
             margin-bottom: 30px;
         }
 
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         h1 {
             font-size: 2rem;
             color: var(--gray-900);
@@ -71,6 +77,179 @@
         .tagline {
             color: var(--gray-600);
             font-size: 0.95rem;
+        }
+
+        .header-left {
+            flex: 1;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: var(--gray-100);
+            border-radius: 6px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-name {
+            font-size: 0.9rem;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        .settings-btn, .logout-btn {
+            background: var(--gray-100);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--gray-700);
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .settings-btn:hover, .logout-btn:hover {
+            background: var(--gray-200);
+        }
+
+        .logout-btn {
+            background: var(--gray-200);
+        }
+
+        /* Auth Screen Styles */
+        .auth-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+        }
+
+        .auth-screen.hidden {
+            display: none;
+        }
+
+        .auth-content {
+            background: white;
+            border-radius: 12px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            max-width: 400px;
+            width: 100%;
+            margin: 20px;
+        }
+
+        .auth-content h1 {
+            margin-bottom: 10px;
+            color: var(--gray-900);
+        }
+
+        .auth-content p {
+            color: var(--gray-600);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .google-sign-in-btn {
+            background: white;
+            border: 2px solid var(--gray-300);
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            font-weight: 500;
+        }
+
+        .google-sign-in-btn:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+        }
+
+        .google-sign-in-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gray-50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 2500;
+        }
+
+        .loading-screen.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .main-app {
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+
+        .main-app.hidden {
+            display: none;
+        }
+
+        .main-app.loading {
+            opacity: 0.5;
+            pointer-events: none;
         }
 
         .stats {
@@ -234,6 +413,7 @@
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s;
+            font-weight: 500;
         }
 
         .btn-primary {
@@ -278,6 +458,7 @@
             border-radius: 6px;
             transition: all 0.3s;
             color: var(--gray-600);
+            font-weight: 500;
         }
 
         .filter-tab:hover {
@@ -488,50 +669,115 @@
             color: var(--gray-500);
         }
 
-        /* PWA Install Banner */
-        .install-banner {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: var(--primary);
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: var(--shadow-lg);
+        /* Settings Modal Styles */
+        .settings-modal {
             display: none;
-            align-items: center;
-            gap: 15px;
-            z-index: 1000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1100;
+            overflow-y: auto;
+            padding: 20px;
         }
 
-        .install-banner.show {
+        .settings-modal.active {
             display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .install-text {
-            flex: 1;
-        }
-
-        .install-btn {
+        .settings-content {
             background: white;
-            color: var(--primary);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
         }
 
-        .install-close {
-            background: none;
-            border: none;
+        .settings-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .settings-body {
+            padding: 20px;
+        }
+
+        .settings-section {
+            margin-bottom: 30px;
+        }
+
+        .settings-section h3 {
+            color: var(--gray-900);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .settings-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .settings-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .settings-input-group label {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            text-transform: capitalize;
+        }
+
+        .settings-input-group input {
+            padding: 8px 10px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        .settings-footer {
+            padding: 20px;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .offline-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #f59e0b;
             color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0;
-            width: 24px;
-            height: 24px;
+            text-align: center;
+            padding: 8px;
+            font-size: 0.9rem;
+            z-index: 1001;
+            display: none;
+        }
+
+        .offline-indicator.show {
+            display: block;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            text-align: left;
         }
 
         @media (max-width: 768px) {
@@ -559,347 +805,879 @@
                 grid-template-columns: 1fr;
             }
 
-            .install-banner {
-                bottom: 10px;
-                left: 10px;
-                right: 10px;
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-left {
+                flex: none;
+            }
+
+            .settings-row {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-content {
+                padding: 40px 30px;
+            }
+
+            .header-right {
+                flex-wrap: wrap;
+                justify-content: center;
             }
         }
 
         .hidden {
             display: none;
         }
-
-        .offline-indicator {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: #f59e0b;
-            color: white;
-            text-align: center;
-            padding: 8px;
-            font-size: 0.9rem;
-            z-index: 1001;
-            display: none;
-        }
-
-        .offline-indicator.show {
-            display: block;
-        }
     </style>
 </head>
 <body>
+    <!-- Auth Screen -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-content">
+            <h1>DishRated</h1>
+            <p>Track and rate your culinary adventures. Sign in with Google to sync your meals across all devices.</p>
+            <button id="googleSignInBtn" class="google-sign-in-btn">
+                <svg class="google-icon" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Continue with Google
+            </button>
+            <div id="authError" class="error-message hidden"></div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen hidden">
+        <div class="spinner"></div>
+        <p>Loading your meals...</p>
+    </div>
+
     <!-- Offline Indicator -->
     <div id="offlineIndicator" class="offline-indicator">
         📱 You're offline - changes will sync when you reconnect
     </div>
 
-    <!-- Install Banner -->
-    <div id="installBanner" class="install-banner">
-        <div class="install-text">
-            <strong>Install FlavorScore</strong><br>
-            Get the full app experience!
+    <!-- Main App -->
+    <div id="mainApp" class="main-app hidden">
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="settings-modal">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h2>Settings</h2>
+                    <button class="close-btn" onclick="closeSettings()">&times;</button>
+                </div>
+                <div class="settings-body">
+                    <div class="settings-section">
+                        <h3>Average Cost Per Person ($)</h3>
+                        <div class="settings-row">
+                            <div class="settings-input-group">
+                                <label>Breakfast</label>
+                                <input type="number" id="settingsCostBreakfast" step="0.01" min="0">
+                            </div>
+                            <div class="settings-input-group">
+                                <label>Lunch</label>
+                                <input type="number" id="settingsCostLunch" step="0.01" min="0">
+                            </div>
+                            <div class="settings-input-group">
+                                <label>Dinner</label>
+                                <input type="number" id="settingsCostDinner" step="0.01" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h3>Average Prep Time (minutes)</h3>
+                        <div class="settings-row">
+                            <div class="settings-input-group">
+                                <label>Breakfast</label>
+                                <input type="number" id="settingsTimeBreakfast" min="0">
+                            </div>
+                            <div class="settings-input-group">
+                                <label>Lunch</label>
+                                <input type="number" id="settingsTimeLunch" min="0">
+                            </div>
+                            <div class="settings-input-group">
+                                <label>Dinner</label>
+                                <input type="number" id="settingsTimeDinner" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-footer">
+                    <button class="btn btn-secondary" onclick="closeSettings()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
+                </div>
+            </div>
         </div>
-        <button id="installBtn" class="install-btn">Install</button>
-        <button id="installClose" class="install-close">&times;</button>
-    </div>
 
-    <header>
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="header-left">
+                        <h1>Dishrated</h1>
+                        <p class="tagline">Track and rate your culinary adventures</p>
+                    </div>
+                    <div class="header-right">
+                        <div id="userInfo" class="user-info">
+                            <img id="userAvatar" class="user-avatar" alt="Profile">
+                            <span id="userName" class="user-name"></span>
+                        </div>
+                        <button class="settings-btn" onclick="openSettings()">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            Settings
+                        </button>
+                        <button id="logoutBtn" class="logout-btn">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                            </svg>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
         <div class="container">
-            <h1>FlavorScore</h1>
-            <p class="tagline">Track and rate your culinary adventures</p>
+            <!-- Statistics -->
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalMeals">0</div>
+                    <div class="stat-label">Total Meals</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgScore">0</div>
+                    <div class="stat-label">Average Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="bestMeal">—</div>
+                    <div class="stat-label">Best Meal</div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Add Meal Form -->
+                <div class="form-section">
+                    <h2 id="formTitle">Add New Meal</h2>
+                    <form id="mealForm">
+                        <div class="form-group">
+                            <label>Upload Photo</label>
+                            <p class="subtitle">Click or drag a photo</p>
+                            <div class="image-upload" id="imageUpload">
+                                <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                                <img id="imagePreview" alt="Preview">
+                                <div class="upload-text" id="uploadText">
+                                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin: 0 auto 10px;">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <p>Click to upload or drag and drop</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mealName">Dish Name *</label>
+                            <input type="text" id="mealName" required placeholder="e.g., Grandma's Lasagna">
+                        </div>
+
+                        <!-- Score Calculation Section -->
+                        <div class="form-group">
+                            <label>Score Factors</label>
+                            <div class="form-row">
+                                <div>
+                                    <label for="healthScore">Health (0-100)</label>
+                                    <input type="number" id="healthScore" min="0" max="100" value="50" placeholder="85">
+                                </div>
+                                <div>
+                                    <label for="tasteScore">Taste (0-100)</label>
+                                    <input type="number" id="tasteScore" min="0" max="100" value="50" placeholder="92">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div>
+                                    <label for="timeMinutes">Time (minutes)</label>
+                                    <input type="number" id="timeMinutes" min="0" value="30" placeholder="25">
+                                </div>
+                                <div>
+                                    <label for="costDollars">Cost Per Person ($)</label>
+                                    <input type="number" id="costDollars" min="0" step="0.01" value="8" placeholder="12.00">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Calculated Score Display -->
+                        <div class="score-display" id="scoreDisplay">
+                            <div class="final-score" id="finalScore">0</div>
+                            <div>Dishrated Score</div>
+                            <div class="score-breakdown" id="scoreBreakdown">
+                                <div class="breakdown-item" id="healthBreakdown">
+                                    <div>Health</div>
+                                    <div id="healthValue">0</div>
+                                </div>
+                                <div class="breakdown-item" id="tasteBreakdown">
+                                    <div>Taste</div>
+                                    <div id="tasteValue">0</div>
+                                </div>
+                                <div class="breakdown-item" id="timeBreakdown">
+                                    <div>Time</div>
+                                    <div id="timeValue">0 min</div>
+                                </div>
+                                <div class="breakdown-item" id="costBreakdown">
+                                    <div>Cost PP</div>
+                                    <div id="costValue">$0</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mealType">Meal Type *</label>
+                            <select id="mealType" required>
+                                <option value="breakfast">Breakfast</option>
+                                <option value="lunch">Lunch</option>
+                                <option value="dinner">Dinner</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mealNotes">Notes (optional)</label>
+                            <textarea id="mealNotes" placeholder="Ingredients, restaurant, or your experience..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Add Meal</button>
+                        <button type="button" class="btn btn-secondary hidden" id="cancelBtn">Cancel</button>
+                    </form>
+                </div>
+
+                <!-- Meals List -->
+                <div class="meals-section">
+                    <h2>Your Meals</h2>
+                    
+                    <!-- Filter Tabs -->
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all">All</button>
+                        <button class="filter-tab" data-filter="breakfast">Breakfast</button>
+                        <button class="filter-tab" data-filter="lunch">Lunch</button>
+                        <button class="filter-tab" data-filter="dinner">Dinner</button>
+                    </div>
+
+                    <div id="mealsContainer" class="meals-grid"></div>
+                </div>
+            </div>
         </div>
-    </header>
 
-    <div class="container">
-        <!-- Statistics -->
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-value" id="totalMeals">0</div>
-                <div class="stat-label">Total Meals</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="avgScore">0</div>
-                <div class="stat-label">Average Score</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="bestMeal">—</div>
-                <div class="stat-label">Best Meal</div>
+        <!-- Duplicate Meal Modal -->
+        <div id="duplicateModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Duplicate Meal Name</h2>
+                </div>
+                <div class="modal-body">
+                    <p id="duplicateMessage">You already have a meal named 'Example'. Do you want to replace it or rename this one?</p>
+                    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="handleDuplicateReplace()">Replace</button>
+                        <button class="btn btn-secondary" onclick="handleDuplicateRename()">Rename</button>
+                        <button class="btn btn-secondary" onclick="handleDuplicateCancel()">Cancel</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Add Meal Form -->
-            <div class="form-section">
-                <h2 id="formTitle">Add New Meal</h2>
-                <form id="mealForm">
-                    <div class="form-group">
-                        <label>Upload Photo</label>
-                        <p class="subtitle">Click or drag a photo</p>
-                        <div class="image-upload" id="imageUpload">
-                            <input type="file" id="imageInput" accept="image/*" style="display: none;">
-                            <img id="imagePreview" alt="Preview">
-                            <div class="upload-text" id="uploadText">
-                                <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin: 0 auto 10px;">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                <p>Click to upload or drag and drop</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="mealName">Dish Name *</label>
-                        <input type="text" id="mealName" required placeholder="e.g., Grandma's Lasagna">
-                    </div>
-
-                    <!-- Score Calculation Section -->
-                    <div class="form-group">
-                        <label>Score Factors</label>
-                        <div class="form-row">
-                            <div>
-                                <label for="healthScore">Health (0-100)</label>
-                                <input type="number" id="healthScore" min="0" max="100" value="50" placeholder="85">
-                            </div>
-                            <div>
-                                <label for="tasteScore">Taste (0-100)</label>
-                                <input type="number" id="tasteScore" min="0" max="100" value="50" placeholder="92">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div>
-                                <label for="timeMinutes">Time (minutes)</label>
-                                <input type="number" id="timeMinutes" min="0" value="30" placeholder="25">
-                            </div>
-                            <div>
-                                <label for="costDollars">Cost ($)</label>
-                                <input type="number" id="costDollars" min="0" step="0.01" value="10" placeholder="14.00">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Calculated Score Display -->
-                    <div class="score-display" id="scoreDisplay">
-                        <div class="final-score" id="finalScore">0</div>
-                        <div>FlavorScore</div>
-                        <div class="score-breakdown" id="scoreBreakdown">
-                            <div class="breakdown-item" id="healthBreakdown">
+        <!-- Meal Details Modal -->
+        <div id="mealModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle"></h2>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" class="modal-image" alt="Meal">
+                    
+                    <div class="modal-score-display">
+                        <div class="modal-final-score" id="modalFinalScore">0</div>
+                        <div>Dishrated Score</div>
+                        <div class="modal-breakdown" id="modalBreakdown">
+                            <div class="breakdown-item" id="modalHealthBreakdown">
                                 <div>Health</div>
-                                <div id="healthValue">0</div>
+                                <div id="modalHealthValue">0</div>
                             </div>
-                            <div class="breakdown-item" id="tasteBreakdown">
+                            <div class="breakdown-item" id="modalTasteBreakdown">
                                 <div>Taste</div>
-                                <div id="tasteValue">0</div>
+                                <div id="modalTasteValue">0</div>
                             </div>
-                            <div class="breakdown-item" id="timeBreakdown">
+                            <div class="breakdown-item" id="modalTimeBreakdown">
                                 <div>Time</div>
-                                <div id="timeValue">0 min</div>
+                                <div id="modalTimeValue">0 min</div>
                             </div>
-                            <div class="breakdown-item" id="costBreakdown">
-                                <div>Cost</div>
-                                <div id="costValue">$0</div>
+                            <div class="breakdown-item" id="modalCostBreakdown">
+                                <div>Cost PP</div>
+                                <div id="modalCostValue">$0</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="mealType">Meal Type *</label>
-                        <select id="mealType" required>
-                            <option value="breakfast">Breakfast</option>
-                            <option value="lunch">Lunch</option>
-                            <option value="dinner">Dinner</option>
-                        </select>
+                    <p><strong>Type:</strong> <span id="modalType"></span></p>
+                    <p><strong>Date:</strong> <span id="modalDate"></span></p>
+                    <div id="modalNotesContainer" class="hidden">
+                        <p><strong>Notes:</strong></p>
+                        <p id="modalNotes"></p>
                     </div>
-
-                    <div class="form-group">
-                        <label for="mealNotes">Notes (optional)</label>
-                        <textarea id="mealNotes" placeholder="Ingredients, restaurant, or your experience..."></textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" id="submitBtn">Add Meal</button>
-                    <button type="button" class="btn btn-secondary hidden" id="cancelBtn">Cancel</button>
-                </form>
-            </div>
-
-            <!-- Meals List -->
-            <div class="meals-section">
-                <h2>Your Meals</h2>
-                
-                <!-- Filter Tabs -->
-                <div class="filter-tabs">
-                    <button class="filter-tab active" data-filter="all">All</button>
-                    <button class="filter-tab" data-filter="breakfast">Breakfast</button>
-                    <button class="filter-tab" data-filter="lunch">Lunch</button>
-                    <button class="filter-tab" data-filter="dinner">Dinner</button>
-                </div>
-
-                <div id="mealsContainer" class="meals-grid"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div id="mealModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle"></h2>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <img id="modalImage" class="modal-image" alt="Meal">
-                
-                <div class="modal-score-display">
-                    <div class="modal-final-score" id="modalFinalScore">0</div>
-                    <div>FlavorScore</div>
-                    <div class="modal-breakdown" id="modalBreakdown">
-                        <div class="breakdown-item" id="modalHealthBreakdown">
-                            <div>Health</div>
-                            <div id="modalHealthValue">0</div>
-                        </div>
-                        <div class="breakdown-item" id="modalTasteBreakdown">
-                            <div>Taste</div>
-                            <div id="modalTasteValue">0</div>
-                        </div>
-                        <div class="breakdown-item" id="modalTimeBreakdown">
-                            <div>Time</div>
-                            <div id="modalTimeValue">0 min</div>
-                        </div>
-                        <div class="breakdown-item" id="modalCostBreakdown">
-                            <div>Cost</div>
-                            <div id="modalCostValue">$0</div>
-                        </div>
-                    </div>
-                </div>
-
-                <p><strong>Type:</strong> <span id="modalType"></span></p>
-                <p><strong>Date:</strong> <span id="modalDate"></span></p>
-                <div id="modalNotesContainer" class="hidden">
-                    <p><strong>Notes:</strong></p>
-                    <p id="modalNotes"></p>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        // Firebase imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+        import { 
+            getAuth, 
+            GoogleAuthProvider, 
+            signInWithPopup, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            getDoc, 
+            collection, 
+            getDocs,
+            deleteDoc,
+            serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQ0dDaPSWltCzr4iG3I6W-z18ZKYy8FKY",
+            authDomain: "dishrated.firebaseapp.com",
+            projectId: "dishrated",
+            storageBucket: "dishrated.firebasestorage.app",
+            messagingSenderId: "339787751185",
+            appId: "1:339787751185:web:3237655cd143ffdc1336b0",
+            measurementId: "G-RQ9P62ZB3J"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // Configure Google Auth Provider
+        const provider = new GoogleAuthProvider();
+        provider.addScope('profile');
+        provider.addScope('email');
+
         // Global variables
         let meals = [];
         let currentFilter = 'all';
         let editingMealId = null;
         let currentImageData = null;
-        let deferredPrompt;
+        let currentUser = null;
+        let userAvgCost = { breakfast: 6, lunch: 10, dinner: 12 };
+        let userAvgTime = { breakfast: 15, lunch: 25, dinner: 40 };
+        let duplicateMealId = null;
+        let pendingMealData = null;
 
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then((registration) => {
-                        console.log('ServiceWorker registered: ', registration);
-                    })
-                    .catch((registrationError) => {
-                        console.log('ServiceWorker registration failed: ', registrationError);
-                    });
-            });
-        }
+        // DOM elements
+        const authScreen = document.getElementById('authScreen');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const mainApp = document.getElementById('mainApp');
+        const googleSignInBtn = document.getElementById('googleSignInBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const authError = document.getElementById('authError');
 
-        // PWA Install Functionality
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            showInstallBanner();
-        });
-
-        function showInstallBanner() {
-            const banner = document.getElementById('installBanner');
-            const hasSeenBanner = localStorage.getItem('flavorscoreInstallBannerSeen');
+        // Initialize the app
+        function initApp() {
+            console.log('Initializing DishRated app...');
             
-            if (!hasSeenBanner) {
-                banner.classList.add('show');
+            // Set up auth state listener
+            onAuthStateChanged(auth, async (user) => {
+                console.log('Auth state changed:', user ? user.email : 'No user');
+                
+                if (user) {
+                    currentUser = user;
+                    showLoadingScreen();
+                    try {
+                        await loadUserData();
+                        showMainApp();
+                    } catch (error) {
+                        console.error('Error loading user data:', error);
+                        showMainApp(); // Show app even if data loading fails
+                    }
+                } else {
+                    currentUser = null;
+                    showAuthScreen();
+                }
+            });
+
+            // Set up event listeners
+            setupEventListeners();
+            updateOnlineStatus();
+        }
+
+        function showAuthScreen() {
+            authScreen.classList.remove('hidden');
+            loadingScreen.classList.add('hidden');
+            mainApp.classList.add('hidden');
+        }
+
+        function showLoadingScreen() {
+            authScreen.classList.add('hidden');
+            loadingScreen.classList.remove('hidden');
+            mainApp.classList.add('hidden');
+        }
+
+        function showMainApp() {
+            authScreen.classList.add('hidden');
+            loadingScreen.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+            
+            // Update user info
+            document.getElementById('userAvatar').src = currentUser.photoURL || '';
+            document.getElementById('userName').textContent = currentUser.displayName || currentUser.email || 'User';
+            
+            // Initialize app components
+            renderMeals();
+            updateStats();
+            updateScoreDisplay();
+        }
+
+        function setupEventListeners() {
+            // Auth listeners
+            googleSignInBtn.addEventListener('click', signInWithGoogle);
+            logoutBtn.addEventListener('click', signOutUser);
+
+            // Online/offline detection
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+
+            // Form listeners
+            const mealForm = document.getElementById('mealForm');
+            const cancelBtn = document.getElementById('cancelBtn');
+            
+            mealForm.addEventListener('submit', handleMealSubmit);
+            cancelBtn.addEventListener('click', resetForm);
+
+            // Score update listeners
+            document.getElementById('healthScore').addEventListener('input', updateScoreDisplay);
+            document.getElementById('tasteScore').addEventListener('input', updateScoreDisplay);
+            document.getElementById('timeMinutes').addEventListener('input', updateScoreDisplay);
+            document.getElementById('costDollars').addEventListener('input', updateScoreDisplay);
+
+            // Filter listeners
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentFilter = tab.dataset.filter;
+                    renderMeals();
+                    updateStats();
+                });
+            });
+
+            // Image upload listeners
+            setupImageUpload();
+        }
+
+        async function signInWithGoogle() {
+            try {
+                hideAuthError();
+                googleSignInBtn.disabled = true;
+                googleSignInBtn.textContent = 'Signing in...';
+                
+                const result = await signInWithPopup(auth, provider);
+                console.log('Sign-in successful:', result.user.displayName || result.user.email);
+                
+            } catch (error) {
+                console.error('Sign-in error:', error);
+                showAuthError('Failed to sign in with Google. Please try again.');
+                
+                googleSignInBtn.disabled = false;
+                googleSignInBtn.innerHTML = `
+                    <svg class="google-icon" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Continue with Google
+                `;
             }
         }
 
-        document.getElementById('installBtn').addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to the install prompt: ${outcome}`);
-                deferredPrompt = null;
-                hideInstallBanner();
-            }
-        });
-
-        document.getElementById('installClose').addEventListener('click', () => {
-            hideInstallBanner();
-            localStorage.setItem('flavorscoreInstallBannerSeen', 'true');
-        });
-
-        function hideInstallBanner() {
-            document.getElementById('installBanner').classList.remove('show');
-        }
-
-        // Online/Offline Detection
-        function updateOnlineStatus() {
-            const offlineIndicator = document.getElementById('offlineIndicator');
-            if (navigator.onLine) {
-                offlineIndicator.classList.remove('show');
-            } else {
-                offlineIndicator.classList.add('show');
+        async function signOutUser() {
+            try {
+                await signOut(auth);
+                console.log('Sign-out successful');
+                // Reset app state
+                meals = [];
+                currentFilter = 'all';
+                editingMealId = null;
+                currentImageData = null;
+                userAvgCost = { breakfast: 6, lunch: 10, dinner: 12 };
+                userAvgTime = { breakfast: 15, lunch: 25, dinner: 40 };
+                duplicateMealId = null;
+                pendingMealData = null;
+            } catch (error) {
+                console.error('Sign-out error:', error);
             }
         }
 
-        window.addEventListener('online', updateOnlineStatus);
-        window.addEventListener('offline', updateOnlineStatus);
-        updateOnlineStatus();
+        function showAuthError(message) {
+            authError.textContent = message;
+            authError.classList.remove('hidden');
+        }
 
-        // Stricter color functions for metrics
+        function hideAuthError() {
+            authError.classList.add('hidden');
+        }
+
+        async function loadUserData() {
+            try {
+                await Promise.all([
+                    loadUserSettings(),
+                    loadUserMeals()
+                ]);
+                console.log('User data loaded successfully');
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                // Continue with defaults if loading fails
+            }
+        }
+
+        async function loadUserSettings() {
+            try {
+                const settingsDoc = await getDoc(doc(db, 'users', currentUser.uid, 'settings', 'preferences'));
+                if (settingsDoc.exists()) {
+                    const data = settingsDoc.data();
+                    if (data.avgCost) userAvgCost = data.avgCost;
+                    if (data.avgTime) userAvgTime = data.avgTime;
+                    console.log('User settings loaded:', { userAvgCost, userAvgTime });
+                }
+            } catch (error) {
+                console.error('Error loading user settings:', error);
+            }
+        }
+
+        async function loadUserMeals() {
+            try {
+                const mealsCollection = collection(db, 'users', currentUser.uid, 'meals');
+                const querySnapshot = await getDocs(mealsCollection);
+                
+                meals = [];
+                querySnapshot.forEach((doc) => {
+                    const mealData = doc.data();
+                    meals.push({
+                        id: doc.id,
+                        ...mealData,
+                        date: mealData.date?.toDate?.()?.toISOString() || mealData.date || new Date().toISOString()
+                    });
+                });
+                
+                // Sort by final score (highest first)
+                meals.sort((a, b) => b.finalScore - a.finalScore);
+                console.log('Meals loaded successfully:', meals.length);
+            } catch (error) {
+                console.error('Error loading meals:', error);
+                meals = [];
+            }
+        }
+
+        async function saveMeal(meal) {
+            try {
+                const mealRef = doc(db, 'users', currentUser.uid, 'meals', meal.name);
+                await setDoc(mealRef, {
+                    ...meal,
+                    date: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+                console.log('Meal saved successfully:', meal.name);
+            } catch (error) {
+                console.error('Error saving meal:', error);
+                throw error;
+            }
+        }
+
+        async function deleteMealFromFirestore(mealName) {
+            try {
+                await deleteDoc(doc(db, 'users', currentUser.uid, 'meals', mealName));
+                console.log('Meal deleted successfully:', mealName);
+            } catch (error) {
+                console.error('Error deleting meal:', error);
+                throw error;
+            }
+        }
+
+        async function saveUserSettings() {
+            try {
+                const settingsRef = doc(db, 'users', currentUser.uid, 'settings', 'preferences');
+                await setDoc(settingsRef, {
+                    avgCost: userAvgCost,
+                    avgTime: userAvgTime,
+                    updatedAt: serverTimestamp()
+                });
+                console.log('Settings saved successfully');
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                throw error;
+            }
+        }
+
+        // Settings Functions
+        function openSettings() {
+            document.getElementById('settingsCostBreakfast').value = userAvgCost.breakfast;
+            document.getElementById('settingsCostLunch').value = userAvgCost.lunch;
+            document.getElementById('settingsCostDinner').value = userAvgCost.dinner;
+            document.getElementById('settingsTimeBreakfast').value = userAvgTime.breakfast;
+            document.getElementById('settingsTimeLunch').value = userAvgTime.lunch;
+            document.getElementById('settingsTimeDinner').value = userAvgTime.dinner;
+            
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        async function saveSettings() {
+            const costBreakfast = parseFloat(document.getElementById('settingsCostBreakfast').value);
+            const costLunch = parseFloat(document.getElementById('settingsCostLunch').value);
+            const costDinner = parseFloat(document.getElementById('settingsCostDinner').value);
+            const timeBreakfast = parseInt(document.getElementById('settingsTimeBreakfast').value);
+            const timeLunch = parseInt(document.getElementById('settingsTimeLunch').value);
+            const timeDinner = parseInt(document.getElementById('settingsTimeDinner').value);
+
+            if (isNaN(costBreakfast) || costBreakfast <= 0 ||
+                isNaN(costLunch) || costLunch <= 0 ||
+                isNaN(costDinner) || costDinner <= 0 ||
+                isNaN(timeBreakfast) || timeBreakfast <= 0 ||
+                isNaN(timeLunch) || timeLunch <= 0 ||
+                isNaN(timeDinner) || timeDinner <= 0) {
+                alert('Please enter positive values for all fields');
+                return;
+            }
+
+            userAvgCost = { breakfast: costBreakfast, lunch: costLunch, dinner: costDinner };
+            userAvgTime = { breakfast: timeBreakfast, lunch: timeLunch, dinner: timeDinner };
+
+            try {
+                await saveUserSettings();
+                recalculateAllMealScores();
+                closeSettings();
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                alert('Error saving settings. Please try again.');
+            }
+        }
+
+        function recalculateAllMealScores() {
+            let updated = false;
+            meals = meals.map(meal => {
+                const newScores = calculateDishratedScore(meal.health, meal.taste, meal.time, meal.cost, meal.type);
+                if (newScores.final !== meal.finalScore) {
+                    updated = true;
+                    return { ...meal, finalScore: newScores.final };
+                }
+                return meal;
+            });
+
+            if (updated) {
+                meals.sort((a, b) => b.finalScore - a.finalScore);
+                renderMeals();
+                updateStats();
+                updateScoreDisplay();
+                console.log('All meal scores recalculated and updated');
+            }
+        }
+
+        // Duplicate meal detection functions
+        function checkDuplicateMeal(name, excludeId = null) {
+            return meals.find(meal => 
+                meal.name.toLowerCase() === name.toLowerCase() && 
+                meal.id !== excludeId
+            );
+        }
+
+        function showDuplicateModal(existingMeal, newMealData) {
+            duplicateMealId = existingMeal.id;
+            pendingMealData = newMealData;
+            document.getElementById('duplicateMessage').textContent = 
+                `You already have a meal named '${existingMeal.name}'. Do you want to replace it or rename this one?`;
+            document.getElementById('duplicateModal').classList.add('active');
+        }
+
+        async function handleDuplicateReplace() {
+            if (duplicateMealId && pendingMealData) {
+                const index = meals.findIndex(m => m.id === duplicateMealId);
+                if (index !== -1) {
+                    pendingMealData.id = duplicateMealId;
+                    pendingMealData.date = meals[index].date;
+                    meals[index] = pendingMealData;
+                    console.log('Meal replaced at index:', index);
+                }
+                await finalizeMealSave();
+            }
+        }
+
+        function handleDuplicateRename() {
+            document.getElementById('duplicateModal').classList.remove('active');
+            document.getElementById('mealName').focus();
+            duplicateMealId = null;
+            pendingMealData = null;
+        }
+
+        function handleDuplicateCancel() {
+            document.getElementById('duplicateModal').classList.remove('active');
+            duplicateMealId = null;
+            pendingMealData = null;
+        }
+
+        async function finalizeMealSave() {
+            document.getElementById('duplicateModal').classList.remove('active');
+            
+            try {
+                if (!editingMealId && duplicateMealId) {
+                    // This was a replace operation
+                } else if (editingMealId) {
+                    // This was an edit operation
+                    const index = meals.findIndex(m => m.id === editingMealId);
+                    if (index !== -1) {
+                        meals[index] = pendingMealData;
+                        console.log('Meal updated at index:', index);
+                    }
+                } else {
+                    // This was a new meal
+                    meals.push(pendingMealData);
+                    console.log('New meal added');
+                }
+                
+                // Save to Firestore
+                await saveMeal(pendingMealData);
+                
+                // Sort by final score
+                meals.sort((a, b) => b.finalScore - a.finalScore);
+                
+                resetForm();
+                renderMeals();
+                updateStats();
+                
+            } catch (error) {
+                console.error('Error saving meal:', error);
+                alert('Error saving meal. Please try again.');
+            }
+            
+            duplicateMealId = null;
+            pendingMealData = null;
+        }
+
+        // Color functions for metrics
         function getHealthTasteColor(score) {
-            if (score >= 90) return '#065F46'; // Dark Green (elite)
-            if (score >= 80) return '#10B981'; // Green (very good)
-            if (score >= 70) return '#34D399'; // Light Green (decent)
-            if (score >= 60) return '#F59E0B'; // Yellow (meh)
-            if (score >= 40) return '#F97316'; // Orange (poor)
-            return '#EF4444'; // Red (bad)
+            if (score >= 90) return 'var(--metric-dark-green)';
+            if (score >= 80) return 'var(--metric-green)';
+            if (score >= 70) return 'var(--metric-light-green)';
+            if (score >= 60) return 'var(--metric-yellow)';
+            if (score >= 40) return 'var(--metric-orange)';
+            return 'var(--metric-red)';
+        }
+
+        function getPersonalizedTimeColor(minutes, mealType) {
+            const avgTime = userAvgTime[mealType] || 30;
+            const percentage = (minutes / avgTime) * 100;
+            
+            if (percentage < 80) return 'var(--metric-dark-green)';
+            if (percentage <= 100) return 'var(--metric-green)';
+            if (percentage <= 120) return 'var(--metric-light-green)';
+            if (percentage <= 140) return 'var(--metric-yellow)';
+            if (percentage <= 160) return 'var(--metric-orange)';
+            return 'var(--metric-red)';
+        }
+
+        function getPersonalizedCostColor(dollars, mealType) {
+            const avgCost = userAvgCost[mealType] || 10;
+            const percentage = (dollars / avgCost) * 100;
+            
+            if (percentage < 80) return 'var(--metric-dark-green)';
+            if (percentage <= 100) return 'var(--metric-green)';
+            if (percentage <= 120) return 'var(--metric-light-green)';
+            if (percentage <= 140) return 'var(--metric-yellow)';
+            if (percentage <= 160) return 'var(--metric-orange)';
+            return 'var(--metric-red)';
         }
 
         function getTimeColor(minutes) {
-            if (minutes <= 10) return '#065F46'; // Dark Green (super fast)
-            if (minutes <= 20) return '#10B981'; // Green
-            if (minutes <= 30) return '#34D399'; // Light Green
-            if (minutes <= 45) return '#F59E0B'; // Yellow
-            if (minutes <= 60) return '#F97316'; // Orange
-            return '#EF4444'; // Red
+            if (minutes <= 10) return 'var(--metric-dark-green)';
+            if (minutes <= 20) return 'var(--metric-green)';
+            if (minutes <= 30) return 'var(--metric-light-green)';
+            if (minutes <= 45) return 'var(--metric-yellow)';
+            if (minutes <= 60) return 'var(--metric-orange)';
+            return 'var(--metric-red)';
         }
 
         function getCostColor(dollars) {
-            if (dollars <= 4) return '#065F46'; // Dark Green (super cheap)
-            if (dollars <= 7) return '#10B981'; // Green
-            if (dollars <= 10) return '#34D399'; // Light Green
-            if (dollars <= 14) return '#F59E0B'; // Yellow
-            if (dollars <= 20) return '#F97316'; // Orange
-            return '#EF4444'; // Red
+            if (dollars <= 4) return 'var(--metric-dark-green)';
+            if (dollars <= 7) return 'var(--metric-green)';
+            if (dollars <= 10) return 'var(--metric-light-green)';
+            if (dollars <= 14) return 'var(--metric-yellow)';
+            if (dollars <= 20) return 'var(--metric-orange)';
+            return 'var(--metric-red)';
         }
 
-        // Score Calculation Functions
+        // Score calculation functions
+        function calculatePersonalizedTimeScore(minutes, mealType) {
+            const baseline = userAvgTime[mealType] || 30;
+            const percentage = (minutes / baseline) * 100;
+            
+            if (percentage <= 100) return 100;
+            if (percentage <= 120) return 90;
+            if (percentage <= 140) return 75;
+            if (percentage <= 160) return 60;
+            if (percentage <= 200) return 40;
+            return 20;
+        }
+
+        function calculatePersonalizedCostScore(dollars, mealType) {
+            const baseline = userAvgCost[mealType] || 10;
+            const percentage = (dollars / baseline) * 100;
+            
+            if (percentage <= 100) return 100;
+            if (percentage <= 120) return 90;
+            if (percentage <= 140) return 75;
+            if (percentage <= 160) return 60;
+            if (percentage <= 200) return 40;
+            return 20;
+        }
+
         function calculateTimeScore(minutes) {
-            // Convert time to score for formula calculation
-            const timeScore = Math.max(0, 100 - (minutes * 2));
-            return timeScore;
+            return Math.max(0, 100 - (minutes * 2));
         }
 
         function calculateCostScore(dollars) {
-            // Convert cost to score for formula calculation
-            const costScore = Math.max(0, 100 - (dollars * 5));
-            return costScore;
+            return Math.max(0, 100 - (dollars * 5));
         }
 
-        function calculateFlavorScore(health, taste, timeMinutes, costDollars) {
-            const timeScore = calculateTimeScore(timeMinutes);
-            const costScore = calculateCostScore(costDollars);
+        function calculateDishratedScore(health, taste, timeMinutes, costDollars, mealType = null) {
+            let timeScore, costScore;
             
-            // Updated formula: Taste 40%, Health 35%, Time 15%, Cost 10%
-            const flavorScore = Math.round(
+            if (mealType) {
+                timeScore = calculatePersonalizedTimeScore(timeMinutes, mealType);
+                costScore = calculatePersonalizedCostScore(costDollars, mealType);
+            } else {
+                timeScore = calculateTimeScore(timeMinutes);
+                costScore = calculateCostScore(costDollars);
+            }
+            
+            const dishratedScore = Math.round(
                 (health * 0.35) + 
                 (taste * 0.40) + 
                 (timeScore * 0.15) + 
@@ -907,7 +1685,7 @@
             );
             
             return {
-                final: flavorScore,
+                final: dishratedScore,
                 health: health,
                 taste: taste,
                 time: timeMinutes,
@@ -923,104 +1701,57 @@
             const timeMinutes = parseInt(document.getElementById('timeMinutes').value) || 0;
             const costDollars = parseFloat(document.getElementById('costDollars').value) || 0;
             
-            const scores = calculateFlavorScore(health, taste, timeMinutes, costDollars);
+            const scores = calculateDishratedScore(health, taste, timeMinutes, costDollars);
             
-            // Update values
             document.getElementById('finalScore').textContent = scores.final;
             document.getElementById('healthValue').textContent = health;
             document.getElementById('tasteValue').textContent = taste;
             document.getElementById('timeValue').textContent = timeMinutes + ' min';
             document.getElementById('costValue').textContent = '$' + costDollars.toFixed(2);
             
-            // Update colors
             document.getElementById('healthBreakdown').style.backgroundColor = getHealthTasteColor(health);
             document.getElementById('tasteBreakdown').style.backgroundColor = getHealthTasteColor(taste);
             document.getElementById('timeBreakdown').style.backgroundColor = getTimeColor(timeMinutes);
             document.getElementById('costBreakdown').style.backgroundColor = getCostColor(costDollars);
         }
 
-        // Add event listeners for real-time score updates
-        document.getElementById('healthScore').addEventListener('input', updateScoreDisplay);
-        document.getElementById('tasteScore').addEventListener('input', updateScoreDisplay);
-        document.getElementById('timeMinutes').addEventListener('input', updateScoreDisplay);
-        document.getElementById('costDollars').addEventListener('input', updateScoreDisplay);
-
-        // Load meals from localStorage
-        function loadMeals() {
-            const stored = localStorage.getItem('flavorscoreMeals');
-            if (stored) {
-                try {
-                    meals = JSON.parse(stored);
-                    // Migrate old single-score format to new multi-factor format
-                    meals = meals.map(meal => {
-                        if (typeof meal.score === 'number' && !meal.health) {
-                            // Old format - convert to new format with default values
-                            return {
-                                ...meal,
-                                health: Math.max(0, Math.min(100, meal.score)),
-                                taste: Math.max(0, Math.min(100, meal.score)),
-                                time: 30,
-                                cost: 10,
-                                finalScore: meal.score
-                            };
-                        }
-                        return meal;
-                    });
-                    saveMeals(); // Save migrated data
-                    console.log('Meals loaded successfully:', meals.length);
-                } catch (e) {
-                    console.error('Error loading meals:', e);
-                    meals = [];
-                }
-            }
-        }
-
-        // Save meals to localStorage
-        function saveMeals() {
-            try {
-                localStorage.setItem('flavorscoreMeals', JSON.stringify(meals));
-                console.log('Meals saved successfully:', meals.length);
-            } catch (e) {
-                console.error('Storage error:', e);
-                alert('Error saving data. Storage might be full.');
-            }
-        }
-
         // Image upload handling
-        const imageUpload = document.getElementById('imageUpload');
-        const imageInput = document.getElementById('imageInput');
-        const imagePreview = document.getElementById('imagePreview');
-        const uploadText = document.getElementById('uploadText');
+        function setupImageUpload() {
+            const imageUpload = document.getElementById('imageUpload');
+            const imageInput = document.getElementById('imageInput');
+            const imagePreview = document.getElementById('imagePreview');
+            const uploadText = document.getElementById('uploadText');
 
-        imageUpload.addEventListener('click', () => {
-            imageInput.click();
-        });
+            imageUpload.addEventListener('click', () => {
+                imageInput.click();
+            });
 
-        imageUpload.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            imageUpload.style.borderColor = '#2563EB';
-        });
+            imageUpload.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                imageUpload.style.borderColor = '#2563EB';
+            });
 
-        imageUpload.addEventListener('dragleave', () => {
-            imageUpload.style.borderColor = '#D1D5DB';
-        });
+            imageUpload.addEventListener('dragleave', () => {
+                imageUpload.style.borderColor = '#D1D5DB';
+            });
 
-        imageUpload.addEventListener('drop', (e) => {
-            e.preventDefault();
-            imageUpload.style.borderColor = '#D1D5DB';
-            
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                processImage(file);
-            }
-        });
+            imageUpload.addEventListener('drop', (e) => {
+                e.preventDefault();
+                imageUpload.style.borderColor = '#D1D5DB';
+                
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    processImage(file);
+                }
+            });
 
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                processImage(file);
-            }
-        });
+            imageInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    processImage(file);
+                }
+            });
+        }
 
         function processImage(file) {
             const reader = new FileReader();
@@ -1029,11 +1760,9 @@
                 const img = new Image();
                 img.onload = function() {
                     try {
-                        // Create canvas for resizing
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         
-                        // Calculate new size (max 800px)
                         let width = img.width;
                         let height = img.height;
                         const maxSize = 800;
@@ -1050,10 +1779,12 @@
                         canvas.height = height;
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Convert to base64
                         currentImageData = canvas.toDataURL('image/jpeg', 0.8);
                         
-                        // Show preview
+                        const imagePreview = document.getElementById('imagePreview');
+                        const uploadText = document.getElementById('uploadText');
+                        const imageUpload = document.getElementById('imageUpload');
+                        
                         imagePreview.src = currentImageData;
                         imagePreview.style.display = 'block';
                         uploadText.style.display = 'none';
@@ -1077,10 +1808,7 @@
         }
 
         // Form handling
-        const mealForm = document.getElementById('mealForm');
-        const cancelBtn = document.getElementById('cancelBtn');
-
-        mealForm.addEventListener('submit', (e) => {
+        async function handleMealSubmit(e) {
             e.preventDefault();
             
             const name = document.getElementById('mealName').value.trim();
@@ -1091,41 +1819,18 @@
             const type = document.getElementById('mealType').value;
             const notes = document.getElementById('mealNotes').value.trim();
             
-            // Validation
-            if (!name) {
-                alert('Please enter a dish name');
+            if (!name || isNaN(health) || health < 0 || health > 100 ||
+                isNaN(taste) || taste < 0 || taste > 100 ||
+                isNaN(timeMinutes) || timeMinutes < 0 ||
+                isNaN(costDollars) || costDollars < 0 || !type) {
+                alert('Please fill in all required fields with valid values');
                 return;
             }
             
-            if (isNaN(health) || health < 0 || health > 100) {
-                alert('Health score must be between 0 and 100');
-                return;
-            }
-            
-            if (isNaN(taste) || taste < 0 || taste > 100) {
-                alert('Taste score must be between 0 and 100');
-                return;
-            }
-            
-            if (isNaN(timeMinutes) || timeMinutes < 0) {
-                alert('Time must be a positive number');
-                return;
-            }
-            
-            if (isNaN(costDollars) || costDollars < 0) {
-                alert('Cost must be a positive number');
-                return;
-            }
-            
-            if (!type) {
-                alert('Please select a meal type');
-                return;
-            }
-            
-            const scores = calculateFlavorScore(health, taste, timeMinutes, costDollars);
+            const scores = calculateDishratedScore(health, taste, timeMinutes, costDollars, type);
             
             const meal = {
-                id: editingMealId || Date.now(),
+                id: editingMealId || name,
                 name,
                 health,
                 taste,
@@ -1136,57 +1841,46 @@
                 notes,
                 image: currentImageData || createDefaultImage(),
                 date: editingMealId ? 
-                    meals.find(m => m.id === editingMealId).date : 
+                    meals.find(m => m.id === editingMealId)?.date : 
                     new Date().toISOString()
             };
             
-            console.log('Saving meal:', meal);
-            
-            if (editingMealId) {
-                const index = meals.findIndex(m => m.id === editingMealId);
-                if (index !== -1) {
-                    meals[index] = meal;
-                    console.log('Meal updated at index:', index);
-                }
-                editingMealId = null;
-            } else {
-                meals.push(meal);
-                console.log('New meal added');
+            const existingMeal = checkDuplicateMeal(name, editingMealId);
+            if (existingMeal) {
+                showDuplicateModal(existingMeal, meal);
+                return;
             }
             
-            // Sort by final score (highest first)
-            meals.sort((a, b) => b.finalScore - a.finalScore);
-            
-            saveMeals();
-            resetForm();
-            renderMeals();
-            updateStats();
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            resetForm();
-        });
+            pendingMealData = meal;
+            await finalizeMealSave();
+        }
 
         function resetForm() {
-            mealForm.reset();
+            document.getElementById('mealForm').reset();
             currentImageData = null;
             editingMealId = null;
+            duplicateMealId = null;
+            pendingMealData = null;
+            
+            const imagePreview = document.getElementById('imagePreview');
+            const uploadText = document.getElementById('uploadText');
+            const imageUpload = document.getElementById('imageUpload');
+            
             imagePreview.style.display = 'none';
             uploadText.style.display = 'block';
             imageUpload.classList.remove('has-image');
+            
             document.getElementById('formTitle').textContent = 'Add New Meal';
             document.getElementById('submitBtn').textContent = 'Add Meal';
-            cancelBtn.classList.add('hidden');
+            document.getElementById('cancelBtn').classList.add('hidden');
             
-            // Reset to default values
             document.getElementById('healthScore').value = 50;
             document.getElementById('tasteScore').value = 50;
             document.getElementById('timeMinutes').value = 30;
-            document.getElementById('costDollars').value = 10;
+            document.getElementById('costDollars').value = 8;
             updateScoreDisplay();
         }
 
-        // Create default image
         function createDefaultImage() {
             const canvas = document.createElement('canvas');
             canvas.width = 400;
@@ -1203,17 +1897,6 @@
             
             return canvas.toDataURL();
         }
-
-        // Filter handling
-        document.querySelectorAll('.filter-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                currentFilter = tab.dataset.filter;
-                renderMeals();
-                updateStats();
-            });
-        });
 
         // Render meals
         function renderMeals() {
@@ -1236,8 +1919,8 @@
             }
             
             container.innerHTML = filteredMeals.map(meal => `
-                <div class="meal-card" onclick="showMealDetails(${meal.id})">
-                    <img src="${meal.image}" alt="${meal.name}" class="meal-image">
+                <div class="meal-card" onclick="showMealDetails('${meal.id}')">
+                    <img src="${meal.image}" alt="${escapeHtml(meal.name)}" class="meal-image">
                     <div class="meal-info">
                         <div class="meal-header">
                             <h3 class="meal-name">${escapeHtml(meal.name)}</h3>
@@ -1256,19 +1939,19 @@
                                 <div class="factor-icon"></div>
                                 Taste ${meal.taste}
                             </div>
-                            <div class="factor-item" style="background-color: ${getTimeColor(meal.time)}">
+                            <div class="factor-item" style="background-color: ${getPersonalizedTimeColor(meal.time, meal.type)}">
                                 <div class="factor-icon"></div>
                                 ${meal.time} min
                             </div>
-                            <div class="factor-item" style="background-color: ${getCostColor(meal.cost)}">
+                            <div class="factor-item" style="background-color: ${getPersonalizedCostColor(meal.cost, meal.type)}">
                                 <div class="factor-icon"></div>
-                                $${meal.cost.toFixed(2)}
+                                $${meal.cost.toFixed(2)} PP
                             </div>
                         </div>
                         ${meal.notes ? `<p class="meal-notes">${escapeHtml(meal.notes)}</p>` : ''}
                         <div class="meal-actions" onclick="event.stopPropagation()">
-                            <button class="btn btn-primary btn-small" onclick="editMeal(${meal.id})">Edit</button>
-                            <button class="btn btn-secondary btn-small" onclick="deleteMeal(${meal.id})">Delete</button>
+                            <button class="btn btn-primary btn-small" onclick="editMeal('${meal.id}')">Edit</button>
+                            <button class="btn btn-secondary btn-small" onclick="deleteMeal('${meal.id}')">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -1314,6 +1997,10 @@
             
             if (meal.image) {
                 currentImageData = meal.image;
+                const imagePreview = document.getElementById('imagePreview');
+                const uploadText = document.getElementById('uploadText');
+                const imageUpload = document.getElementById('imageUpload');
+                
                 imagePreview.src = meal.image;
                 imagePreview.style.display = 'block';
                 uploadText.style.display = 'none';
@@ -1322,19 +2009,27 @@
             
             document.getElementById('formTitle').textContent = 'Edit Meal';
             document.getElementById('submitBtn').textContent = 'Update Meal';
-            cancelBtn.classList.remove('hidden');
+            document.getElementById('cancelBtn').classList.remove('hidden');
             
             updateScoreDisplay();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // Delete meal
-        function deleteMeal(id) {
+        async function deleteMeal(id) {
             if (confirm('Are you sure you want to delete this meal?')) {
-                meals = meals.filter(m => m.id !== id);
-                saveMeals();
-                renderMeals();
-                updateStats();
+                try {
+                    const meal = meals.find(m => m.id === id);
+                    if (meal) {
+                        await deleteMealFromFirestore(meal.name);
+                        meals = meals.filter(m => m.id !== id);
+                        renderMeals();
+                        updateStats();
+                    }
+                } catch (error) {
+                    console.error('Error deleting meal:', error);
+                    alert('Error deleting meal. Please try again.');
+                }
             }
         }
 
@@ -1351,11 +2046,10 @@
             document.getElementById('modalTimeValue').textContent = meal.time + ' min';
             document.getElementById('modalCostValue').textContent = '$' + meal.cost.toFixed(2);
             
-            // Update modal colors
             document.getElementById('modalHealthBreakdown').style.backgroundColor = getHealthTasteColor(meal.health);
             document.getElementById('modalTasteBreakdown').style.backgroundColor = getHealthTasteColor(meal.taste);
-            document.getElementById('modalTimeBreakdown').style.backgroundColor = getTimeColor(meal.time);
-            document.getElementById('modalCostBreakdown').style.backgroundColor = getCostColor(meal.cost);
+            document.getElementById('modalTimeBreakdown').style.backgroundColor = getPersonalizedTimeColor(meal.time, meal.type);
+            document.getElementById('modalCostBreakdown').style.backgroundColor = getPersonalizedCostColor(meal.cost, meal.type);
             
             document.getElementById('modalType').textContent = meal.type;
             document.getElementById('modalDate').textContent = new Date(meal.date).toLocaleDateString();
@@ -1373,6 +2067,16 @@
         // Close modal
         function closeModal() {
             document.getElementById('mealModal').classList.remove('active');
+        }
+
+        // Online/Offline Detection
+        function updateOnlineStatus() {
+            const offlineIndicator = document.getElementById('offlineIndicator');
+            if (navigator.onLine) {
+                offlineIndicator.classList.remove('show');
+            } else {
+                offlineIndicator.classList.add('show');
+            }
         }
 
         // Utility functions
@@ -1395,11 +2099,20 @@
             return date.toLocaleDateString();
         }
 
-        // Initialize app
-        loadMeals();
-        renderMeals();
-        updateStats();
-        updateScoreDisplay();
+        // Make functions global for onclick handlers
+        window.openSettings = openSettings;
+        window.closeSettings = closeSettings;
+        window.saveSettings = saveSettings;
+        window.closeModal = closeModal;
+        window.editMeal = editMeal;
+        window.deleteMeal = deleteMeal;
+        window.showMealDetails = showMealDetails;
+        window.handleDuplicateReplace = handleDuplicateReplace;
+        window.handleDuplicateRename = handleDuplicateRename;
+        window.handleDuplicateCancel = handleDuplicateCancel;
+
+        // Initialize the app when the page loads
+        initApp();
     </script>
 </body>
 </html>
