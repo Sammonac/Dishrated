@@ -96,12 +96,6 @@
             padding: 8px 16px;
             background: var(--gray-100);
             border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .user-info:hover {
-            background: var(--gray-200);
         }
 
         .user-avatar {
@@ -117,27 +111,7 @@
             font-weight: 500;
         }
 
-        .social-stats {
-            display: flex;
-            gap: 15px;
-            font-size: 0.8rem;
-            color: var(--gray-600);
-            margin-top: 4px;
-        }
-
-        .social-stat {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .social-stat:hover {
-            color: var(--primary);
-        }
-
-        .settings-btn, .logout-btn, .discover-btn {
+        .settings-btn, .logout-btn {
             background: var(--gray-100);
             border: none;
             padding: 8px 16px;
@@ -152,21 +126,12 @@
             font-weight: 500;
         }
 
-        .settings-btn:hover, .logout-btn:hover, .discover-btn:hover {
+        .settings-btn:hover, .logout-btn:hover {
             background: var(--gray-200);
         }
 
         .logout-btn {
             background: var(--gray-200);
-        }
-
-        .discover-btn {
-            background: var(--primary);
-            color: white;
-        }
-
-        .discover-btn:hover {
-            background: var(--primary-dark);
         }
 
         /* Auth Screen Styles */
@@ -468,30 +433,6 @@
 
         .btn-secondary:hover {
             background: var(--gray-300);
-        }
-
-        .btn-follow {
-            background: var(--primary);
-            color: white;
-            padding: 6px 16px;
-            font-size: 0.9rem;
-            border-radius: 4px;
-        }
-
-        .btn-follow:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-unfollow {
-            background: var(--gray-600);
-            color: white;
-            padding: 6px 16px;
-            font-size: 0.9rem;
-            border-radius: 4px;
-        }
-
-        .btn-unfollow:hover {
-            background: var(--gray-700);
         }
 
         .meals-section h2 {
@@ -811,135 +752,6 @@
             justify-content: flex-end;
         }
 
-        /* Discover Users Modal */
-        .discover-modal {
-            max-width: 800px;
-        }
-
-        .search-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid var(--gray-300);
-            border-radius: 6px;
-            font-size: 1rem;
-        }
-
-        .search-btn {
-            padding: 10px 20px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .search-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .users-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .user-card {
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            transition: box-shadow 0.3s;
-        }
-
-        .user-card:hover {
-            box-shadow: var(--shadow);
-        }
-
-        .user-card-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto 15px;
-        }
-
-        .user-card-name {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: 8px;
-        }
-
-        .user-card-stats {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            color: var(--gray-600);
-        }
-
-        .user-card-stat {
-            text-align: center;
-        }
-
-        .user-card-stat-value {
-            font-weight: 600;
-            color: var(--gray-800);
-        }
-
-        /* Followers/Following Modal */
-        .followers-modal {
-            max-width: 600px;
-        }
-
-        .followers-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .follower-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid var(--gray-200);
-            gap: 15px;
-        }
-
-        .follower-item:last-child {
-            border-bottom: none;
-        }
-
-        .follower-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .follower-info {
-            flex: 1;
-        }
-
-        .follower-name {
-            font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: 4px;
-        }
-
-        .follower-stats {
-            font-size: 0.85rem;
-            color: var(--gray-600);
-        }
-
         .offline-indicator {
             position: fixed;
             top: 0;
@@ -1013,19 +825,6 @@
 
             .header-right {
                 flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .users-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .user-info {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .social-stats {
                 justify-content: center;
             }
         }
@@ -1123,36 +922,6 @@
             </div>
         </div>
 
-        <!-- Discover Users Modal -->
-        <div id="discoverModal" class="modal">
-            <div class="modal-content discover-modal">
-                <div class="modal-header">
-                    <h2>Discover Food Lovers</h2>
-                    <button class="close-btn" onclick="closeDiscover()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="search-bar">
-                        <input type="text" id="searchInput" class="search-input" placeholder="Search users by name or email...">
-                        <button class="search-btn" onclick="searchUsers()">Search</button>
-                    </div>
-                    <div id="usersContainer" class="users-grid"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Followers/Following Modal -->
-        <div id="followersModal" class="modal">
-            <div class="modal-content followers-modal">
-                <div class="modal-header">
-                    <h2 id="followersModalTitle">Followers</h2>
-                    <button class="close-btn" onclick="closeFollowersModal()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div id="followersContainer" class="followers-list"></div>
-                </div>
-            </div>
-        </div>
-
         <header>
             <div class="container">
                 <div class="header-content">
@@ -1161,26 +930,10 @@
                         <p class="tagline">Track and rate your culinary adventures</p>
                     </div>
                     <div class="header-right">
-                        <div id="userInfo" class="user-info" onclick="openFollowersModal('followers')">
+                        <div id="userInfo" class="user-info">
                             <img id="userAvatar" class="user-avatar" alt="Profile">
-                            <div>
-                                <div id="userName" class="user-name"></div>
-                                <div class="social-stats">
-                                    <div class="social-stat" onclick="event.stopPropagation(); openFollowersModal('followers')">
-                                        <span id="followersCount">0</span> followers
-                                    </div>
-                                    <div class="social-stat" onclick="event.stopPropagation(); openFollowersModal('following')">
-                                        <span id="followingCount">0</span> following
-                                    </div>
-                                </div>
-                            </div>
+                            <span id="userName" class="user-name"></span>
                         </div>
-                        <button class="discover-btn" onclick="openDiscover()">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.196-2.121l-.75 1.299A1 1 0 0016.5 18h.5zm-3.5-6a3 3 0 11-6 0 3 3 0 016 0zM7 21V6c0-2.21 1.79-4 4-4s4 1.79 4 4v15"></path>
-                            </svg>
-                            Discover
-                        </button>
                         <button class="settings-btn" onclick="openSettings()">
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
@@ -1406,12 +1159,7 @@
             collection, 
             getDocs,
             deleteDoc,
-            serverTimestamp,
-            query,
-            where,
-            orderBy,
-            limit,
-            onSnapshot
+            serverTimestamp 
         } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
         // Firebase configuration
@@ -1445,11 +1193,6 @@
         let userAvgTime = { breakfast: 15, lunch: 25, dinner: 40 };
         let duplicateMealId = null;
         let pendingMealData = null;
-        let followersCount = 0;
-        let followingCount = 0;
-        let discoveredUsers = [];
-        let followersList = [];
-        let followingList = [];
 
         // DOM elements
         const authScreen = document.getElementById('authScreen');
@@ -1480,8 +1223,6 @@
                         updateDebugInfo('Loading user data...');
                         try {
                             await loadUserData();
-                            await setupUserProfile();
-                            await loadFollowStats();
                             showMainApp();
                             updateDebugInfo('App loaded successfully');
                         } catch (error) {
@@ -1591,10 +1332,6 @@
                 updateDebugInfo('Starting Google Sign-In...');
                 hideAuthError();
                 
-                // Additional debugging
-                console.log('Firebase Auth object:', auth);
-                console.log('Google Provider object:', provider);
-                
                 googleSignInBtn.disabled = true;
                 googleSignInBtn.textContent = 'Signing in...';
                 
@@ -1604,37 +1341,25 @@
                 
             } catch (error) {
                 console.error('❌ Sign-in error:', error);
-                console.error('Error details:', {
-                    code: error.code,
-                    message: error.message,
-                    customData: error.customData,
-                    operationType: error.operationType
-                });
                 updateDebugInfo(`Sign-in error: ${error.code} - ${error.message}`);
                 
                 let errorMessage = 'Failed to sign in with Google. ';
                 
                 switch (error.code) {
                     case 'auth/popup-blocked':
-                        errorMessage += 'Please allow popups for this site and try again.';
+                        errorMessage += 'Please allow popups for this site.';
                         break;
                     case 'auth/popup-closed-by-user':
                         errorMessage += 'Sign-in was cancelled.';
                         break;
                     case 'auth/unauthorized-domain':
-                        errorMessage += 'This domain is not authorized. Add your domain to Firebase Console → Authentication → Settings → Authorized domains.';
+                        errorMessage += 'This domain is not authorized. Please contact support.';
                         break;
                     case 'auth/operation-not-allowed':
-                        errorMessage += 'Google Sign-In is not enabled. Enable it in Firebase Console → Authentication → Sign-in method.';
-                        break;
-                    case 'auth/internal-error':
-                        errorMessage += 'Internal error. Check your Firebase configuration.';
-                        break;
-                    case 'auth/network-request-failed':
-                        errorMessage += 'Network error. Check your internet connection.';
+                        errorMessage += 'Google Sign-In is not enabled.';
                         break;
                     default:
-                        errorMessage += `Error code: ${error.code}. Message: ${error.message}`;
+                        errorMessage += `Error: ${error.message}`;
                 }
                 
                 showAuthError(errorMessage);
@@ -1665,11 +1390,6 @@
                 userAvgTime = { breakfast: 15, lunch: 25, dinner: 40 };
                 duplicateMealId = null;
                 pendingMealData = null;
-                followersCount = 0;
-                followingCount = 0;
-                discoveredUsers = [];
-                followersList = [];
-                followingList = [];
             } catch (error) {
                 console.error('Sign-out error:', error);
             }
@@ -1694,24 +1414,6 @@
             } catch (error) {
                 console.error('Error loading user data:', error);
                 // Continue with defaults if loading fails
-            }
-        }
-
-        async function setupUserProfile() {
-            try {
-                // Create/update user profile document
-                const userRef = doc(db, 'users', currentUser.uid);
-                await setDoc(userRef, {
-                    displayName: currentUser.displayName || '',
-                    email: currentUser.email || '',
-                    photoURL: currentUser.photoURL || '',
-                    lastActive: serverTimestamp(),
-                    updatedAt: serverTimestamp()
-                }, { merge: true });
-                
-                console.log('User profile updated');
-            } catch (error) {
-                console.error('Error setting up user profile:', error);
             }
         }
 
@@ -1751,406 +1453,6 @@
                 console.error('Error loading meals:', error);
                 meals = [];
             }
-        }
-
-        // Follow System Functions
-        async function followUser(targetUserId) {
-            if (!currentUser || targetUserId === currentUser.uid) return;
-            
-            try {
-                const followId = `${currentUser.uid}_${targetUserId}`;
-                const followRef = doc(db, 'follows', followId);
-                
-                await setDoc(followRef, {
-                    followerId: currentUser.uid,
-                    followingId: targetUserId,
-                    createdAt: serverTimestamp()
-                });
-                
-                console.log('Successfully followed user:', targetUserId);
-                await loadFollowStats();
-                
-            } catch (error) {
-                console.error('Error following user:', error);
-                alert('Error following user. Please try again.');
-            }
-        }
-
-        async function unfollowUser(targetUserId) {
-            if (!currentUser || targetUserId === currentUser.uid) return;
-            
-            try {
-                const followId = `${currentUser.uid}_${targetUserId}`;
-                const followRef = doc(db, 'follows', followId);
-                
-                await deleteDoc(followRef);
-                
-                console.log('Successfully unfollowed user:', targetUserId);
-                await loadFollowStats();
-                
-            } catch (error) {
-                console.error('Error unfollowing user:', error);
-                alert('Error unfollowing user. Please try again.');
-            }
-        }
-
-        async function isFollowing(targetUserId) {
-            if (!currentUser || targetUserId === currentUser.uid) return false;
-            
-            try {
-                const followId = `${currentUser.uid}_${targetUserId}`;
-                const followDoc = await getDoc(doc(db, 'follows', followId));
-                return followDoc.exists();
-            } catch (error) {
-                console.error('Error checking follow status:', error);
-                return false;
-            }
-        }
-
-        async function loadFollowStats() {
-            if (!currentUser) return;
-            
-            try {
-                // Count followers (where followingId == currentUser.uid)
-                const followersQuery = query(
-                    collection(db, 'follows'),
-                    where('followingId', '==', currentUser.uid)
-                );
-                const followersSnapshot = await getDocs(followersQuery);
-                followersCount = followersSnapshot.size;
-                
-                // Count following (where followerId == currentUser.uid)
-                const followingQuery = query(
-                    collection(db, 'follows'),
-                    where('followerId', '==', currentUser.uid)
-                );
-                const followingSnapshot = await getDocs(followingQuery);
-                followingCount = followingSnapshot.size;
-                
-                // Update UI
-                document.getElementById('followersCount').textContent = followersCount;
-                document.getElementById('followingCount').textContent = followingCount;
-                
-                console.log('Follow stats loaded:', { followersCount, followingCount });
-                
-            } catch (error) {
-                console.error('Error loading follow stats:', error);
-            }
-        }
-
-        async function loadFollowersList() {
-            if (!currentUser) return [];
-            
-            try {
-                const followersQuery = query(
-                    collection(db, 'follows'),
-                    where('followingId', '==', currentUser.uid),
-                    orderBy('createdAt', 'desc')
-                );
-                
-                const followersSnapshot = await getDocs(followersQuery);
-                const followerIds = [];
-                followersSnapshot.forEach(doc => {
-                    followerIds.push(doc.data().followerId);
-                });
-                
-                // Get user details for each follower
-                const followersWithDetails = [];
-                for (const followerId of followerIds) {
-                    const userDoc = await getDoc(doc(db, 'users', followerId));
-                    if (userDoc.exists()) {
-                        const userData = userDoc.data();
-                        
-                        // Get meal count for this user
-                        const mealsQuery = collection(db, 'users', followerId, 'meals');
-                        const mealsSnapshot = await getDocs(mealsQuery);
-                        
-                        followersWithDetails.push({
-                            id: followerId,
-                            ...userData,
-                            mealCount: mealsSnapshot.size
-                        });
-                    }
-                }
-                
-                return followersWithDetails;
-                
-            } catch (error) {
-                console.error('Error loading followers list:', error);
-                return [];
-            }
-        }
-
-        async function loadFollowingList() {
-            if (!currentUser) return [];
-            
-            try {
-                const followingQuery = query(
-                    collection(db, 'follows'),
-                    where('followerId', '==', currentUser.uid),
-                    orderBy('createdAt', 'desc')
-                );
-                
-                const followingSnapshot = await getDocs(followingQuery);
-                const followingIds = [];
-                followingSnapshot.forEach(doc => {
-                    followingIds.push(doc.data().followingId);
-                });
-                
-                // Get user details for each following
-                const followingWithDetails = [];
-                for (const followingId of followingIds) {
-                    const userDoc = await getDoc(doc(db, 'users', followingId));
-                    if (userDoc.exists()) {
-                        const userData = userDoc.data();
-                        
-                        // Get meal count for this user
-                        const mealsQuery = collection(db, 'users', followingId, 'meals');
-                        const mealsSnapshot = await getDocs(mealsQuery);
-                        
-                        followingWithDetails.push({
-                            id: followingId,
-                            ...userData,
-                            mealCount: mealsSnapshot.size
-                        });
-                    }
-                }
-                
-                return followingWithDetails;
-                
-            } catch (error) {
-                console.error('Error loading following list:', error);
-                return [];
-            }
-        }
-
-        // Discover Users Functions
-        async function openDiscover() {
-            document.getElementById('discoverModal').classList.add('active');
-            await loadAllUsers();
-        }
-
-        function closeDiscover() {
-            document.getElementById('discoverModal').classList.remove('active');
-        }
-
-        async function loadAllUsers() {
-            try {
-                const usersQuery = query(
-                    collection(db, 'users'),
-                    orderBy('lastActive', 'desc'),
-                    limit(20)
-                );
-                
-                const usersSnapshot = await getDocs(usersQuery);
-                discoveredUsers = [];
-                
-                for (const userDoc of usersSnapshot.docs) {
-                    if (userDoc.id !== currentUser.uid) {
-                        const userData = userDoc.data();
-                        
-                        // Get meal count
-                        const mealsQuery = collection(db, 'users', userDoc.id, 'meals');
-                        const mealsSnapshot = await getDocs(mealsQuery);
-                        
-                        // Get follower count
-                        const followersQuery = query(
-                            collection(db, 'follows'),
-                            where('followingId', '==', userDoc.id)
-                        );
-                        const followersSnapshot = await getDocs(followersQuery);
-                        
-                        // Check if already following
-                        const following = await isFollowing(userDoc.id);
-                        
-                        discoveredUsers.push({
-                            id: userDoc.id,
-                            ...userData,
-                            mealCount: mealsSnapshot.size,
-                            followerCount: followersSnapshot.size,
-                            isFollowing: following
-                        });
-                    }
-                }
-                
-                renderDiscoveredUsers();
-                
-            } catch (error) {
-                console.error('Error loading users:', error);
-            }
-        }
-
-        async function searchUsers() {
-            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (!searchTerm) {
-                await loadAllUsers();
-                return;
-            }
-            
-            try {
-                // Get all users and filter client-side (Firestore doesn't support case-insensitive search)
-                const usersSnapshot = await getDocs(collection(db, 'users'));
-                discoveredUsers = [];
-                
-                for (const userDoc of usersSnapshot.docs) {
-                    if (userDoc.id !== currentUser.uid) {
-                        const userData = userDoc.data();
-                        const name = (userData.displayName || '').toLowerCase();
-                        const email = (userData.email || '').toLowerCase();
-                        
-                        if (name.includes(searchTerm) || email.includes(searchTerm)) {
-                            // Get meal count
-                            const mealsQuery = collection(db, 'users', userDoc.id, 'meals');
-                            const mealsSnapshot = await getDocs(mealsQuery);
-                            
-                            // Get follower count
-                            const followersQuery = query(
-                                collection(db, 'follows'),
-                                where('followingId', '==', userDoc.id)
-                            );
-                            const followersSnapshot = await getDocs(followersQuery);
-                            
-                            // Check if already following
-                            const following = await isFollowing(userDoc.id);
-                            
-                            discoveredUsers.push({
-                                id: userDoc.id,
-                                ...userData,
-                                mealCount: mealsSnapshot.size,
-                                followerCount: followersSnapshot.size,
-                                isFollowing: following
-                            });
-                        }
-                    }
-                }
-                
-                renderDiscoveredUsers();
-                
-            } catch (error) {
-                console.error('Error searching users:', error);
-            }
-        }
-
-        function renderDiscoveredUsers() {
-            const container = document.getElementById('usersContainer');
-            
-            if (discoveredUsers.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state" style="grid-column: 1/-1;">
-                        <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin: 0 auto 20px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.196-2.121l-.75 1.299A1 1 0 0016.5 18h.5zm-3.5-6a3 3 0 11-6 0 3 3 0 016 0zM7 21V6c0-2.21 1.79-4 4-4s4 1.79 4 4v15"></path>
-                        </svg>
-                        <h3>No users found</h3>
-                        <p>Try a different search term or browse all users.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = discoveredUsers.map(user => `
-                <div class="user-card">
-                    <img src="${user.photoURL || 'data:image/svg+xml,%3Csvg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Ccircle cx="32" cy="32" r="32" fill="%23E5E7EB"/%3E%3Cpath d="M32 28c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0 4c4.42 0 8 1.79 8 4v2H24v-2c0-2.21 3.58-4 8-4z" fill="%239CA3AF"/%3E%3C/svg%3E'}" 
-                         alt="${escapeHtml(user.displayName || user.email)}" 
-                         class="user-card-avatar">
-                    <div class="user-card-name">${escapeHtml(user.displayName || user.email || 'User')}</div>
-                    <div class="user-card-stats">
-                        <div class="user-card-stat">
-                            <div class="user-card-stat-value">${user.mealCount}</div>
-                            <div>meals</div>
-                        </div>
-                        <div class="user-card-stat">
-                            <div class="user-card-stat-value">${user.followerCount}</div>
-                            <div>followers</div>
-                        </div>
-                    </div>
-                    <button class="btn ${user.isFollowing ? 'btn-unfollow' : 'btn-follow'}" 
-                            onclick="toggleFollow('${user.id}', ${user.isFollowing})"
-                            id="followBtn_${user.id}">
-                        ${user.isFollowing ? 'Unfollow' : 'Follow'}
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        async function toggleFollow(userId, currentlyFollowing) {
-            const button = document.getElementById(`followBtn_${userId}`);
-            const originalText = button.textContent;
-            button.disabled = true;
-            button.textContent = currentlyFollowing ? 'Unfollowing...' : 'Following...';
-            
-            try {
-                if (currentlyFollowing) {
-                    await unfollowUser(userId);
-                    button.textContent = 'Follow';
-                    button.className = 'btn btn-follow';
-                } else {
-                    await followUser(userId);
-                    button.textContent = 'Unfollow';
-                    button.className = 'btn btn-unfollow';
-                }
-                
-                // Update the user's following status in the local array
-                const userIndex = discoveredUsers.findIndex(u => u.id === userId);
-                if (userIndex !== -1) {
-                    discoveredUsers[userIndex].isFollowing = !currentlyFollowing;
-                    if (!currentlyFollowing) {
-                        discoveredUsers[userIndex].followerCount++;
-                    } else {
-                        discoveredUsers[userIndex].followerCount--;
-                    }
-                }
-                
-            } catch (error) {
-                console.error('Error toggling follow:', error);
-                button.textContent = originalText;
-            }
-            
-            button.disabled = false;
-        }
-
-        // Followers/Following Modal Functions
-        async function openFollowersModal(type) {
-            document.getElementById('followersModalTitle').textContent = 
-                type === 'followers' ? 'Followers' : 'Following';
-            
-            if (type === 'followers') {
-                followersList = await loadFollowersList();
-                renderFollowersList(followersList);
-            } else {
-                followingList = await loadFollowingList();
-                renderFollowersList(followingList);
-            }
-            
-            document.getElementById('followersModal').classList.add('active');
-        }
-
-        function closeFollowersModal() {
-            document.getElementById('followersModal').classList.remove('active');
-        }
-
-        function renderFollowersList(users) {
-            const container = document.getElementById('followersContainer');
-            
-            if (users.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <p>No users to show</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = users.map(user => `
-                <div class="follower-item">
-                    <img src="${user.photoURL || 'data:image/svg+xml,%3Csvg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Ccircle cx="24" cy="24" r="24" fill="%23E5E7EB"/%3E%3Cpath d="M24 21c-2.48 0-4.5-2.02-4.5-4.5S21.52 12 24 12s4.5 2.02 4.5 4.5S26.48 21 24 21zm0 3c3.32 0 6 1.34 6 3v1.5H18V27c0-1.66 2.68-3 6-3z" fill="%239CA3AF"/%3E%3C/svg%3E'}" 
-                         alt="${escapeHtml(user.displayName || user.email)}" 
-                         class="follower-avatar">
-                    <div class="follower-info">
-                        <div class="follower-name">${escapeHtml(user.displayName || user.email || 'User')}</div>
-                        <div class="follower-stats">${user.mealCount} meals</div>
-                    </div>
-                </div>
-            `).join('');
         }
 
         async function saveMeal(meal) {
@@ -2466,7 +1768,7 @@
             document.getElementById('healthValue').textContent = health;
             document.getElementById('tasteValue').textContent = taste;
             document.getElementById('timeValue').textContent = timeMinutes + ' min';
-            document.getElementById('costValue').textContent = ' + costDollars.toFixed(2);
+            document.getElementById('costValue').textContent = '$' + costDollars.toFixed(2);
             
             document.getElementById('healthBreakdown').style.backgroundColor = getHealthTasteColor(health);
             document.getElementById('tasteBreakdown').style.backgroundColor = getHealthTasteColor(taste);
@@ -2704,7 +2006,7 @@
                             </div>
                             <div class="factor-item" style="background-color: ${getPersonalizedCostColor(meal.cost, meal.type)}">
                                 <div class="factor-icon"></div>
-                                ${meal.cost.toFixed(2)} PP
+                                $${meal.cost.toFixed(2)} PP
                             </div>
                         </div>
                         ${meal.notes ? `<p class="meal-notes">${escapeHtml(meal.notes)}</p>` : ''}
@@ -2803,7 +2105,7 @@
             document.getElementById('modalHealthValue').textContent = meal.health;
             document.getElementById('modalTasteValue').textContent = meal.taste;
             document.getElementById('modalTimeValue').textContent = meal.time + ' min';
-            document.getElementById('modalCostValue').textContent = ' + meal.cost.toFixed(2);
+            document.getElementById('modalCostValue').textContent = '$' + meal.cost.toFixed(2);
             
             document.getElementById('modalHealthBreakdown').style.backgroundColor = getHealthTasteColor(meal.health);
             document.getElementById('modalTasteBreakdown').style.backgroundColor = getHealthTasteColor(meal.taste);
@@ -2869,12 +2171,6 @@
         window.handleDuplicateReplace = handleDuplicateReplace;
         window.handleDuplicateRename = handleDuplicateRename;
         window.handleDuplicateCancel = handleDuplicateCancel;
-        window.openDiscover = openDiscover;
-        window.closeDiscover = closeDiscover;
-        window.searchUsers = searchUsers;
-        window.toggleFollow = toggleFollow;
-        window.openFollowersModal = openFollowersModal;
-        window.closeFollowersModal = closeFollowersModal;
 
         // Initialize the app when the page loads
         document.addEventListener('DOMContentLoaded', () => {
