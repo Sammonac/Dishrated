@@ -96,6 +96,12 @@
             padding: 8px 16px;
             background: var(--gray-100);
             border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .user-info:hover {
+            background: var(--gray-200);
         }
 
         .user-avatar {
@@ -832,6 +838,21 @@
         .hidden {
             display: none;
         }
+
+        #searchModal.modal,
+        #searchModal.modal.active {
+          z-index: 1000;
+        }
+        #profileModal.modal,
+        #profileModal.modal.active {
+          z-index: 1100;
+        }
+
+
+        #mealModal.modal,
+        #mealModal.modal.active {
+          z-index: 1200;
+        }
     </style>
 </head>
 <body>
@@ -930,7 +951,7 @@
                         <p class="tagline">Track and rate your culinary adventures</p>
                     </div>
                     <div class="header-right">
-                        <div id="userInfo" class="user-info">
+                        <div id="userInfo" class="user-info" onclick="openMyProfile()">
                             <img id="userAvatar" class="user-avatar" alt="Profile">
                             <span id="userName" class="user-name"></span>
                         </div>
@@ -940,6 +961,13 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
                             Settings
+                        </button>
+                        <button class="settings-btn" onclick="openSearchModal()">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="8" stroke-width="2"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"/>
+                            </svg>
+                            Search
                         </button>
                         <button id="logoutBtn" class="logout-btn">
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1141,6 +1169,45 @@
         </div>
     </div>
 
+    <!-- User Search Modal -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>User Search</h2>
+                <button class="close-btn" onclick="closeSearchModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input id="searchInput" type="text" placeholder="Search by name or email..." style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px;">
+                <div id="searchResults"></div>
+            </div>
+        </div>
+    </div>
+    <!-- User Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 id="profileName">Profile</h2>
+                <button class="close-btn" onclick="closeProfileModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                    <img id="profileAvatar" src="" alt="Avatar" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; background: #eee;">
+                    <div>
+                        <div id="profileEmail" style="color: #666; font-size: 0.95rem;"></div>
+                        <div style="display: flex; gap: 10px; margin-top: 5px;">
+                            <span id="profileFollowers" style="font-size: 0.9rem;">0 followers</span>
+                            <span id="profileFollowing" style="font-size: 0.9rem;">0 following</span>
+                        </div>
+                    </div>
+                    <button id="followBtn" class="btn btn-primary" style="margin-left: auto; display: none;">Follow</button>
+                </div>
+                <h3 style="margin: 20px 0 10px;">Meals</h3>
+                <div id="profileMeals"></div>
+                <div id="followersSection" style="margin-top:30px;"></div>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
@@ -1162,8 +1229,9 @@
             serverTimestamp 
         } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-        // Firebase configuration
-        const firebaseConfig = {
+
+   // Firebase configuration
+   const firebaseConfig = {
             apiKey: "AIzaSyAQ0dDaPSWltCzr4iG3I6W-z18ZKYy8FKY",
             authDomain: "dishrated.firebaseapp.com",
             projectId: "dishrated",
@@ -1172,6 +1240,7 @@
             appId: "1:339787751185:web:3237655cd143ffdc1336b0",
             measurementId: "G-RQ9P62ZB3J"
         };
+
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -2098,7 +2167,6 @@
         function showMealDetails(id) {
             const meal = meals.find(m => m.id === id);
             if (!meal) return;
-            
             document.getElementById('modalTitle').textContent = meal.name;
             document.getElementById('modalImage').src = meal.image;
             document.getElementById('modalFinalScore').textContent = meal.finalScore;
@@ -2106,22 +2174,18 @@
             document.getElementById('modalTasteValue').textContent = meal.taste;
             document.getElementById('modalTimeValue').textContent = meal.time + ' min';
             document.getElementById('modalCostValue').textContent = '$' + meal.cost.toFixed(2);
-            
             document.getElementById('modalHealthBreakdown').style.backgroundColor = getHealthTasteColor(meal.health);
             document.getElementById('modalTasteBreakdown').style.backgroundColor = getHealthTasteColor(meal.taste);
             document.getElementById('modalTimeBreakdown').style.backgroundColor = getPersonalizedTimeColor(meal.time, meal.type);
             document.getElementById('modalCostBreakdown').style.backgroundColor = getPersonalizedCostColor(meal.cost, meal.type);
-            
             document.getElementById('modalType').textContent = meal.type;
-            document.getElementById('modalDate').textContent = new Date(meal.date).toLocaleDateString();
-            
+            document.getElementById('modalDate').textContent = formatDate(meal.date);
             if (meal.notes) {
                 document.getElementById('modalNotes').textContent = meal.notes;
                 document.getElementById('modalNotesContainer').classList.remove('hidden');
             } else {
                 document.getElementById('modalNotesContainer').classList.add('hidden');
             }
-            
             document.getElementById('mealModal').classList.add('active');
         }
 
@@ -2147,16 +2211,30 @@
             return div.innerHTML;
         }
 
-        function formatDate(dateString) {
-            const date = new Date(dateString);
+        function formatDate(dateInput) {
+            // Handles Firestore Timestamp, ISO string, or Date
+            let date;
+            if (!dateInput) return 'Unknown';
+            if (typeof dateInput === 'object' && typeof dateInput.toDate === 'function') {
+                date = dateInput.toDate();
+            } else if (typeof dateInput === 'string') {
+                const parsed = Date.parse(dateInput);
+                if (!isNaN(parsed)) {
+                    date = new Date(parsed);
+                } else {
+                    return 'Unknown';
+                }
+            } else if (dateInput instanceof Date) {
+                date = dateInput;
+            } else {
+                return 'Unknown';
+            }
             const now = new Date();
             const diffTime = Math.abs(now - date);
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            
             if (diffDays === 0) return 'Today';
             if (diffDays === 1) return 'Yesterday';
             if (diffDays < 7) return `${diffDays} days ago`;
-            
             return date.toLocaleDateString();
         }
 
@@ -2186,6 +2264,261 @@
                 initApp();
             }
         });
+
+        // --- User Search & Profile Logic ---
+        // Open/close modals
+        function openSearchModal() {
+            document.getElementById('searchModal').classList.add('active');
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('searchInput').focus();
+        }
+        function closeSearchModal() {
+            document.getElementById('searchModal').classList.remove('active');
+        }
+        function openProfileModal(user) {
+            document.getElementById('profileModal').classList.add('active');
+            loadProfile(user);
+        }
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('active');
+        }
+        // Search users in Firestore
+        async function searchUsers(query) {
+            if (!query || query.length < 2) return [];
+            const usersRef = collection(db, 'users');
+            const snapshot = await getDocs(usersRef);
+            const results = [];
+            snapshot.forEach(docSnap => {
+                const data = docSnap.data();
+                if (!data || !data.profile) return;
+                const { displayName, email, photoURL, uid } = data.profile;
+                if (
+                    (displayName && displayName.toLowerCase().includes(query.toLowerCase())) ||
+                    (email && email.toLowerCase().includes(query.toLowerCase()))
+                ) {
+                    results.push({ uid, displayName, email, photoURL });
+                }
+            });
+            return results;
+        }
+        // Render search results
+        async function handleSearchInput(e) {
+            const query = e.target.value.trim();
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '<div style="color:#888;">Searching...</div>';
+            const users = await searchUsers(query);
+            if (users.length === 0) {
+                resultsDiv.innerHTML = '<div style="color:#888;">No users found.</div>';
+                return;
+            }
+            resultsDiv.innerHTML = users.map(u => `
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee;">
+                    <img src="${u.photoURL || ''}" alt="Avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;background:#eee;">
+                    <div style="flex:1;">
+                        <div style="font-weight:500;">${escapeHtml(u.displayName || u.email)}</div>
+                        <div style="color:#888;font-size:0.9rem;">${escapeHtml(u.email)}</div>
+                    </div>
+                    <button class="btn btn-primary btn-small" onclick="viewProfile('${u.uid}'); return false;">View</button>
+                </div>
+            `).join('');
+        }
+        document.getElementById('searchInput').addEventListener('input', debounce(handleSearchInput, 400));
+        // Debounce helper
+        function debounce(fn, delay) {
+            let timer;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn.apply(this, args), delay);
+            };
+        }
+        // View profile
+        async function viewProfile(uid) {
+            closeSearchModal();
+            openProfileModal(uid);
+        }
+        // Load profile data and meals
+        async function loadProfile(uid) {
+            const profileName = document.getElementById('profileName');
+            const profileAvatar = document.getElementById('profileAvatar');
+            const profileEmail = document.getElementById('profileEmail');
+            const profileFollowers = document.getElementById('profileFollowers');
+            const profileFollowing = document.getElementById('profileFollowing');
+            const followBtn = document.getElementById('followBtn');
+            const profileMeals = document.getElementById('profileMeals');
+            const followersSection = document.getElementById('followersSection');
+            // Fetch user profile
+            const userDoc = await getDoc(doc(db, 'users', uid));
+            let profile = { displayName: '', email: '', photoURL: '', followers: [], following: [] };
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+                if (data.profile) {
+                    profile = { ...profile, ...data.profile };
+                }
+                profile.followers = data.followers || [];
+                profile.following = data.following || [];
+            }
+            profileName.textContent = profile.displayName || profile.email || 'User';
+            profileAvatar.src = profile.photoURL || '';
+            profileEmail.textContent = profile.email || '';
+            profileFollowers.textContent = `${profile.followers.length} follower${profile.followers.length === 1 ? '' : 's'}`;
+            profileFollowing.textContent = `${profile.following.length} following`;
+            // Show/hide follow button
+            if (currentUser && currentUser.uid !== uid) {
+                followBtn.style.display = '';
+                followBtn.textContent = profile.followers.includes(currentUser.uid) ? 'Unfollow' : 'Follow';
+                followBtn.onclick = async function() {
+                    await toggleFollow(uid, profile.followers.includes(currentUser.uid));
+                    await loadProfile(uid);
+                };
+            } else {
+                followBtn.style.display = 'none';
+            }
+            // Fetch meals
+            const mealsCol = collection(db, 'users', uid, 'meals');
+            const mealsSnap = await getDocs(mealsCol);
+            const userMeals = [];
+            mealsSnap.forEach(docSnap => {
+                const meal = docSnap.data();
+                userMeals.push({ ...meal, id: docSnap.id });
+            });
+            if (userMeals.length === 0) {
+                profileMeals.innerHTML = '<div style="color:#888;">No meals to show.</div>';
+            } else {
+                profileMeals.innerHTML = userMeals.map(meal => `
+                    <div style="background:#f9fafb;padding:10px 15px;margin-bottom:10px;border-radius:6px;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <img src="${meal.image || ''}" alt="Meal" style="width:48px;height:48px;border-radius:6px;object-fit:cover;background:#eee;">
+                            <div style="flex:1;">
+                                <div style="font-weight:500;">${escapeHtml(meal.name)}</div>
+                                <div style="color:#888;font-size:0.9rem;">${meal.type} &middot; ${formatDate(meal.date)}</div>
+                            </div>
+                            <span style="font-weight:bold;color:var(--primary);font-size:1.2rem;">${meal.finalScore}</span>
+                            <button class="btn btn-primary btn-small" onclick="viewOtherUserMeal('${uid}','${meal.id}')">View</button>
+                        </div>
+                        ${meal.notes ? `<div style=\"color:#666;font-size:0.95rem;margin-top:5px;\">${escapeHtml(meal.notes)}</div>` : ''}
+                    </div>
+                `).join('');
+            }
+            // Show followers list if viewing own profile
+            if (currentUser && currentUser.uid === uid && profile.followers.length > 0) {
+                // Fetch all follower profiles
+                const followersQuery = await getDocs(collection(db, 'users'));
+                const followersList = [];
+                followersQuery.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data.profile && profile.followers.includes(data.profile.uid)) {
+                        followersList.push(data.profile);
+                    }
+                });
+                followersSection.innerHTML = `<h3 style='margin:20px 0 10px;'>Followers (${followersList.length})</h3>` +
+                    followersList.map(f => `
+                        <div style='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee;'>
+                            <img src='${f.photoURL || ''}' alt='Avatar' style='width:32px;height:32px;border-radius:50%;object-fit:cover;background:#eee;'>
+                            <div style='flex:1;'>
+                                <div style='font-weight:500;'>${escapeHtml(f.displayName || f.email)}</div>
+                                <div style='color:#888;font-size:0.9rem;'>${escapeHtml(f.email)}</div>
+                            </div>
+                        </div>
+                    `).join('');
+            } else {
+                followersSection.innerHTML = '';
+            }
+        }
+        // Toggle follow/unfollow
+        async function toggleFollow(targetUid, isFollowing) {
+            if (!currentUser) return;
+            const userRef = doc(db, 'users', currentUser.uid);
+            const targetRef = doc(db, 'users', targetUid);
+            // Get both docs
+            const [userDoc, targetDoc] = await Promise.all([getDoc(userRef), getDoc(targetRef)]);
+            let userData = userDoc.exists() ? userDoc.data() : {};
+            let targetData = targetDoc.exists() ? targetDoc.data() : {};
+            userData.following = userData.following || [];
+            targetData.followers = targetData.followers || [];
+            if (isFollowing) {
+                userData.following = userData.following.filter(uid => uid !== targetUid);
+                targetData.followers = targetData.followers.filter(uid => uid !== currentUser.uid);
+            } else {
+                userData.following.push(targetUid);
+                targetData.followers.push(currentUser.uid);
+            }
+            // Save both
+            await Promise.all([
+                setDoc(userRef, { ...userData }, { merge: true }),
+                setDoc(targetRef, { ...targetData }, { merge: true })
+            ]);
+        }
+        // Save user profile info on sign in
+        async function saveUserProfileIfNeeded() {
+            if (!currentUser) return;
+            const userRef = doc(db, 'users', currentUser.uid);
+            const userDocSnap = await getDoc(userRef);
+            if (!userDocSnap.exists() || !userDocSnap.data().profile) {
+                await setDoc(userRef, {
+                    profile: {
+                        uid: currentUser.uid,
+                        displayName: currentUser.displayName || '',
+                        email: currentUser.email || '',
+                        photoURL: currentUser.photoURL || ''
+                    },
+                    followers: [],
+                    following: []
+                }, { merge: true });
+            }
+        }
+        // Call saveUserProfileIfNeeded after sign in
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                await saveUserProfileIfNeeded();
+            }
+        });
+        // Make new functions global
+        window.openSearchModal = openSearchModal;
+        window.closeSearchModal = closeSearchModal;
+        window.openProfileModal = openProfileModal;
+        window.closeProfileModal = closeProfileModal;
+        window.viewProfile = viewProfile;
+        // View a meal from another user's profile
+        async function viewOtherUserMeal(userId, mealId) {
+            // Fetch meal from Firestore
+            const mealDoc = await getDoc(doc(db, 'users', userId, 'meals', mealId));
+            if (!mealDoc.exists()) {
+                alert('Meal not found.');
+                return;
+            }
+            const meal = mealDoc.data();
+            // Populate modal fields
+            document.getElementById('modalTitle').textContent = meal.name;
+            document.getElementById('modalImage').src = meal.image;
+            document.getElementById('modalFinalScore').textContent = meal.finalScore;
+            document.getElementById('modalHealthValue').textContent = meal.health;
+            document.getElementById('modalTasteValue').textContent = meal.taste;
+            document.getElementById('modalTimeValue').textContent = meal.time + ' min';
+            document.getElementById('modalCostValue').textContent = '$' + meal.cost.toFixed(2);
+            document.getElementById('modalHealthBreakdown').style.backgroundColor = getHealthTasteColor(meal.health);
+            document.getElementById('modalTasteBreakdown').style.backgroundColor = getHealthTasteColor(meal.taste);
+            document.getElementById('modalTimeBreakdown').style.backgroundColor = getPersonalizedTimeColor(meal.time, meal.type);
+            document.getElementById('modalCostBreakdown').style.backgroundColor = getPersonalizedCostColor(meal.cost, meal.type);
+            document.getElementById('modalType').textContent = meal.type;
+            document.getElementById('modalDate').textContent = formatDate(meal.date);
+            if (meal.notes) {
+                document.getElementById('modalNotes').textContent = meal.notes;
+                document.getElementById('modalNotesContainer').classList.remove('hidden');
+            } else {
+                document.getElementById('modalNotesContainer').classList.add('hidden');
+            }
+            document.getElementById('mealModal').classList.add('active');
+        }
+        window.viewOtherUserMeal = viewOtherUserMeal;
+        // Open your own profile
+        function openMyProfile() {
+            if (currentUser) {
+                openProfileModal(currentUser.uid);
+            }
+        }
+        window.openMyProfile = openMyProfile;
     </script>
 </body>
 </html>
