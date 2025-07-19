@@ -853,6 +853,30 @@
         #mealModal.modal.active {
           z-index: 1200;
         }
+
+        #followingModal.modal,
+        #followingModal.modal.active {
+          z-index: 1200;
+        }
+
+        .meals-grid.horizontal-scroll {
+            display: flex !important;
+            flex-direction: row;
+            overflow-x: auto;
+            gap: 20px;
+            padding-bottom: 10px;
+        }
+        .meals-grid.horizontal-scroll .meal-card {
+            min-width: 360px;
+            max-width: 360px;
+            flex: 0 0 auto;
+        }
+        .other-user-grid {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            overflow-x: unset !important;
+        }
     </style>
 </head>
 <body>
@@ -892,6 +916,60 @@
 
     <!-- Main App -->
     <div id="mainApp" class="main-app hidden">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="header-left">
+                        <h1>Dishrated</h1>
+                        <p class="tagline">Track and rate your culinary adventures</p>
+                    </div>
+                    <div class="header-right">
+                        <div id="userInfo" class="user-info" onclick="openMyProfile()">
+                            <img id="userAvatar" class="user-avatar" alt="Profile">
+                            <span id="userName" class="user-name"></span>
+                        </div>
+                        <button class="settings-btn" onclick="openSettings()">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            Settings
+                        </button>
+                        <button class="settings-btn" onclick="openSearchModal()">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="8" stroke-width="2"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"/>
+                            </svg>
+                            Search
+                        </button>
+                        <button id="logoutBtn" class="logout-btn">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                            </svg>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Other User Meals View -->
+        <div id="otherUserMealsView" class="hidden">
+            <div class="container">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:30px;">
+                    <div>
+                        <h1 id="otherUserMealsTitle" style="font-size:2rem;color:var(--gray-900);"></h1>
+                        <div id="otherUserEmail" style="color:#666;font-size:0.95rem;"></div>
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center;">
+                        <button class="btn btn-secondary" id="backToMyMealsBtn" type="button">Back to My Meals</button>
+                        <button class="btn btn-primary" id="unfollowOtherUserBtn" type="button">Unfollow</button>
+                    </div>
+                </div>
+                <div class="meals-section" style="margin-bottom:0;">
+                    <div id="otherUserMealsContainer" class="meals-grid"></div>
+                </div>
+            </div>
+        </div>
         <!-- Settings Modal -->
         <div id="settingsModal" class="settings-modal">
             <div class="settings-content">
@@ -942,43 +1020,6 @@
                 </div>
             </div>
         </div>
-
-        <header>
-            <div class="container">
-                <div class="header-content">
-                    <div class="header-left">
-                        <h1>Dishrated</h1>
-                        <p class="tagline">Track and rate your culinary adventures</p>
-                    </div>
-                    <div class="header-right">
-                        <div id="userInfo" class="user-info" onclick="openMyProfile()">
-                            <img id="userAvatar" class="user-avatar" alt="Profile">
-                            <span id="userName" class="user-name"></span>
-                        </div>
-                        <button class="settings-btn" onclick="openSettings()">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                            Settings
-                        </button>
-                        <button class="settings-btn" onclick="openSearchModal()">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <circle cx="11" cy="11" r="8" stroke-width="2"/>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"/>
-                            </svg>
-                            Search
-                        </button>
-                        <button id="logoutBtn" class="logout-btn">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                            </svg>
-                            Logout
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </header>
 
         <div class="container">
             <!-- Statistics -->
@@ -1179,6 +1220,7 @@
             <div class="modal-body">
                 <input id="searchInput" type="text" placeholder="Search by name or email..." style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px;">
                 <div id="searchResults"></div>
+                <div id="searchProfileView" style="margin-top:20px;"></div>
             </div>
         </div>
     </div>
@@ -1195,15 +1237,27 @@
                     <div>
                         <div id="profileEmail" style="color: #666; font-size: 0.95rem;"></div>
                         <div style="display: flex; gap: 10px; margin-top: 5px;">
-                            <span id="profileFollowers" style="font-size: 0.9rem;">0 followers</span>
-                            <span id="profileFollowing" style="font-size: 0.9rem;">0 following</span>
+                            <span id="profileFollowers" style="font-size: 0.9rem;cursor:pointer;">0 followers</span>
+                            <span id="profileFollowing" style="font-size: 0.9rem;cursor:pointer;" onclick="showFollowingList()">0 following</span>
                         </div>
                     </div>
                     <button id="followBtn" class="btn btn-primary" style="margin-left: auto; display: none;">Follow</button>
                 </div>
-                <h3 style="margin: 20px 0 10px;">Meals</h3>
                 <div id="profileMeals"></div>
                 <div id="followersSection" style="margin-top:30px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Following List Modal -->
+    <div id="followingModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Following</h2>
+                <button class="close-btn" onclick="closeFollowingModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="followingList"></div>
             </div>
         </div>
     </div>
@@ -1229,6 +1283,8 @@
             serverTimestamp 
         } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
+
+        //sammon
 
    // Firebase configuration
    const firebaseConfig = {
@@ -2030,7 +2086,13 @@
 
         // Render meals
         function renderMeals() {
+            if (window.viewingOtherUser) return;
             const container = document.getElementById('mealsContainer');
+            container.classList.remove('other-user-grid');
+            container.classList.remove('horizontal-scroll');
+            container.style.justifyContent = '';
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) mainContent.style.display = 'grid';
             const filteredMeals = currentFilter === 'all' ? 
                 meals : 
                 meals.filter(m => m.type === currentFilter);
@@ -2271,6 +2333,7 @@
             document.getElementById('searchModal').classList.add('active');
             document.getElementById('searchInput').value = '';
             document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('searchProfileView').innerHTML = '';
             document.getElementById('searchInput').focus();
         }
         function closeSearchModal() {
@@ -2297,7 +2360,9 @@
                     (displayName && displayName.toLowerCase().includes(query.toLowerCase())) ||
                     (email && email.toLowerCase().includes(query.toLowerCase()))
                 ) {
+                    if (!currentUser || uid !== currentUser.uid) {
                     results.push({ uid, displayName, email, photoURL });
+                    }
                 }
             });
             return results;
@@ -2306,6 +2371,7 @@
         async function handleSearchInput(e) {
             const query = e.target.value.trim();
             const resultsDiv = document.getElementById('searchResults');
+            document.getElementById('searchProfileView').innerHTML = '';
             resultsDiv.innerHTML = '<div style="color:#888;">Searching...</div>';
             const users = await searchUsers(query);
             if (users.length === 0) {
@@ -2319,7 +2385,7 @@
                         <div style="font-weight:500;">${escapeHtml(u.displayName || u.email)}</div>
                         <div style="color:#888;font-size:0.9rem;">${escapeHtml(u.email)}</div>
                     </div>
-                    <button class="btn btn-primary btn-small" onclick="viewProfile('${u.uid}'); return false;">View</button>
+                    <button class="btn btn-primary btn-small" onclick="showSearchProfile('${u.uid}')">View</button>
                 </div>
             `).join('');
         }
@@ -2374,31 +2440,12 @@
             } else {
                 followBtn.style.display = 'none';
             }
-            // Fetch meals
-            const mealsCol = collection(db, 'users', uid, 'meals');
-            const mealsSnap = await getDocs(mealsCol);
-            const userMeals = [];
-            mealsSnap.forEach(docSnap => {
-                const meal = docSnap.data();
-                userMeals.push({ ...meal, id: docSnap.id });
-            });
-            if (userMeals.length === 0) {
-                profileMeals.innerHTML = '<div style="color:#888;">No meals to show.</div>';
+            // Hide meals if viewing own profile
+            if (currentUser && currentUser.uid === uid) {
+                profileMeals.innerHTML = '';
             } else {
-                profileMeals.innerHTML = userMeals.map(meal => `
-                    <div style="background:#f9fafb;padding:10px 15px;margin-bottom:10px;border-radius:6px;">
-                        <div style="display:flex;align-items:center;gap:10px;">
-                            <img src="${meal.image || ''}" alt="Meal" style="width:48px;height:48px;border-radius:6px;object-fit:cover;background:#eee;">
-                            <div style="flex:1;">
-                                <div style="font-weight:500;">${escapeHtml(meal.name)}</div>
-                                <div style="color:#888;font-size:0.9rem;">${meal.type} &middot; ${formatDate(meal.date)}</div>
-                            </div>
-                            <span style="font-weight:bold;color:var(--primary);font-size:1.2rem;">${meal.finalScore}</span>
-                            <button class="btn btn-primary btn-small" onclick="viewOtherUserMeal('${uid}','${meal.id}')">View</button>
-                        </div>
-                        ${meal.notes ? `<div style=\"color:#666;font-size:0.95rem;margin-top:5px;\">${escapeHtml(meal.notes)}</div>` : ''}
-                    </div>
-                `).join('');
+                // Hide meals in modal for others
+                profileMeals.innerHTML = '<div style="color:#888;">Meals are now shown in the main view. Use the View button in followers/search.</div>';
             }
             // Show followers list if viewing own profile
             if (currentUser && currentUser.uid === uid && profile.followers.length > 0) {
@@ -2412,19 +2459,189 @@
                     }
                 });
                 followersSection.innerHTML = `<h3 style='margin:20px 0 10px;'>Followers (${followersList.length})</h3>` +
-                    followersList.map(f => `
+                    followersList.map(f => {
+                        const isFollowing = profile.following && profile.following.includes(f.uid);
+                        return `
                         <div style='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee;'>
                             <img src='${f.photoURL || ''}' alt='Avatar' style='width:32px;height:32px;border-radius:50%;object-fit:cover;background:#eee;'>
                             <div style='flex:1;'>
                                 <div style='font-weight:500;'>${escapeHtml(f.displayName || f.email)}</div>
                                 <div style='color:#888;font-size:0.9rem;'>${escapeHtml(f.email)}</div>
                             </div>
+                                ${isFollowing
+                                    ? `<button class="btn btn-primary btn-small" onclick="viewOtherUserMainFromButton('${f.uid}')">View</button>`
+                                    : `<button class="btn btn-primary btn-small" onclick="followFromFollowersList('${f.uid}', this)">Follow</button>`
+                                }
                         </div>
-                    `).join('');
+                        `;
+                    }).join('');
             } else {
                 followersSection.innerHTML = '';
             }
         }
+        // View other user's meals in main app area
+        async function viewOtherUserMain(userId) {
+            console.log('[DEBUG] Entering viewOtherUserMain for userId:', userId);
+            if (currentUser && userId === currentUser.uid) {
+                window.viewingOtherUser = false;
+                document.getElementById('mainApp').querySelector('.form-section').classList.remove('hidden');
+                document.getElementById('mealsContainer').classList.remove('hidden');
+                document.getElementById('otherUserInfoBar')?.remove();
+                renderMeals();
+                updateStats();
+                console.log('[DEBUG] Returned to own meals view (self)');
+                return;
+            }
+            window.viewingOtherUser = true;
+            document.getElementById('mainApp').querySelector('.form-section').classList.add('hidden');
+            document.getElementById('mealsContainer').classList.remove('hidden');
+            // Place info bar above stats
+            let infoBar = document.getElementById('otherUserInfoBar');
+            if (infoBar) infoBar.remove(); // Remove any existing bar to avoid duplicates
+            infoBar = document.createElement('div');
+            infoBar.id = 'otherUserInfoBar';
+            infoBar.style.display = 'flex';
+            infoBar.style.alignItems = 'center';
+            infoBar.style.justifyContent = 'space-between';
+            infoBar.style.margin = '20px 0 10px 0';
+            infoBar.innerHTML = `
+                <div id="otherUserInfoText"></div>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn btn-secondary" id="backToMyMealsBtn" type="button">Back to My Meals</button>
+                    <button class="btn btn-primary" id="unfollowOtherUserBtn" type="button">Unfollow</button>
+                </div>
+            `;
+            // Insert above stats
+            const stats = document.querySelector('.stats');
+            stats.parentNode.insertBefore(infoBar, stats);
+            infoBar.classList.remove('hidden');
+            // Fetch user profile
+            const userDoc = await getDoc(doc(db, 'users', userId));
+            let profile = { displayName: '', email: '', photoURL: '', followers: [], following: [] };
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+                if (data.profile) {
+                    profile = { ...profile, ...data.profile };
+                }
+                profile.followers = data.followers || [];
+                profile.following = data.following || [];
+            }
+            document.getElementById('otherUserInfoText').innerHTML = `<strong>${escapeHtml(profile.displayName || profile.email || 'User')}</strong> &middot; <span style='color:#666;font-size:0.95rem;'>${escapeHtml(profile.email || '')}</span>`;
+            // Delegated event handler for info bar buttons
+            if (!window._otherUserBarDelegation) {
+                window._otherUserBarDelegation = async function(e) {
+                    if (e.target && e.target.id === 'backToMyMealsBtn') {
+                        console.log('[DEBUG] Delegated: Back to My Meals button clicked');
+                        window.viewingOtherUser = false;
+                        document.getElementById('mainApp').querySelector('.form-section').classList.remove('hidden');
+                        document.getElementById('mealsContainer').classList.remove('hidden');
+                        document.getElementById('otherUserInfoBar')?.remove();
+                        renderMeals();
+                        updateStats();
+                        console.log('[DEBUG] Returned to own meals view');
+                    }
+                    if (e.target && e.target.id === 'unfollowOtherUserBtn') {
+                        console.log('[DEBUG] Delegated: Unfollow button clicked');
+                    await toggleFollow(userId, true);
+                        document.getElementById('unfollowOtherUserBtn').style.display = 'none';
+                        console.log('[DEBUG] Unfollowed user, returning to own meals');
+                        window.viewingOtherUser = false;
+                        document.getElementById('mainApp').querySelector('.form-section').classList.remove('hidden');
+                        document.getElementById('mealsContainer').classList.remove('hidden');
+                        document.getElementById('otherUserInfoBar')?.remove();
+                        renderMeals();
+                        updateStats();
+                        console.log('[DEBUG] Returned to own meals view');
+                    }
+                };
+                document.addEventListener('click', window._otherUserBarDelegation, true);
+            }
+            // Fetch meals
+            const mealsCol = collection(db, 'users', userId, 'meals');
+            const mealsSnap = await getDocs(mealsCol);
+            let userMeals = [];
+            mealsSnap.forEach(docSnap => {
+                const meal = docSnap.data();
+                userMeals.push({ ...meal, id: docSnap.id });
+            });
+            // Filtering logic
+            let filter = 'all';
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            filterTabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.filter === 'all') tab.classList.add('active');
+                tab.onclick = () => {
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    filter = tab.dataset.filter;
+                    console.log('[DEBUG] Filter tab clicked:', filter);
+                    renderOtherUserMealsFiltered();
+                };
+            });
+            function renderOtherUserMealsFiltered() {
+                let filteredMeals = filter === 'all' ? userMeals : userMeals.filter(m => m.type === filter);
+                filteredMeals.sort((a, b) => b.finalScore - a.finalScore);
+                updateStatsForMeals(filteredMeals);
+                const container = document.getElementById('mealsContainer');
+                if (window.viewingOtherUser) {
+                    container.classList.add('other-user-grid');
+                    container.classList.remove('horizontal-scroll');
+                } else {
+                    container.classList.remove('other-user-grid');
+                    container.classList.remove('horizontal-scroll');
+                }
+                if (filteredMeals.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;">No meals to show.</div>';
+            } else {
+                    container.innerHTML = filteredMeals.map(meal => `
+                        <div class="meal-card">
+                            <img src="${meal.image || ''}" alt="${escapeHtml(meal.name)}" class="meal-image">
+                            <div class="meal-info">
+                                <div class="meal-header">
+                                    <h3 class="meal-name">${escapeHtml(meal.name)}</h3>
+                                    <span class="meal-score">${meal.finalScore}</span>
+                        </div>
+                                <div class="meal-meta">
+                                    <span class="meal-type">${meal.type}</span>
+                                    <span>${formatDate(meal.date)}</span>
+                                </div>
+                                <div class="meal-factors">
+                                    <div class="factor-item" style="background-color: ${getHealthTasteColor(meal.health)}">
+                                        <div class="factor-icon"></div>
+                                        Health ${meal.health}
+                                    </div>
+                                    <div class="factor-item" style="background-color: ${getHealthTasteColor(meal.taste)}">
+                                        <div class="factor-icon"></div>
+                                        Taste ${meal.taste}
+                                    </div>
+                                    <div class="factor-item" style="background-color: ${getPersonalizedTimeColor(meal.time, meal.type)}">
+                                        <div class="factor-icon"></div>
+                                        ${meal.time} min
+                                    </div>
+                                    <div class="factor-item" style="background-color: ${getPersonalizedCostColor(meal.cost, meal.type)}">
+                                        <div class="factor-icon"></div>
+                                        $${meal.cost.toFixed(2)} PP
+                                    </div>
+                                </div>
+                                ${meal.notes ? `<p class="meal-notes">${escapeHtml(meal.notes)}</p>` : ''}
+                            </div>
+                    </div>
+                `).join('');
+            }
+                console.log('[DEBUG] Rendered other user meals, count:', filteredMeals.length);
+            }
+            renderOtherUserMealsFiltered();
+            console.log('[DEBUG] Finished viewOtherUserMain setup');
+        }
+        window.viewOtherUserMain = viewOtherUserMain;
+        // Back to my meals
+        document.getElementById('backToMyMealsBtn').addEventListener('click', () => {
+            window.viewingOtherUser = false;
+            document.getElementById('mainApp').querySelector('.form-section').classList.remove('hidden');
+            document.getElementById('mealsContainer').classList.remove('hidden');
+            renderMeals();
+            updateStats(); // Restore your own stats
+        });
         // Toggle follow/unfollow
         async function toggleFollow(targetUid, isFollowing) {
             if (!currentUser) return;
@@ -2519,6 +2736,353 @@
             }
         }
         window.openMyProfile = openMyProfile;
+        // Show user profile and meals in search modal
+        async function showSearchProfile(uid) {
+            const profileDiv = document.getElementById('searchProfileView');
+            profileDiv.innerHTML = '<div style="color:#888;">Loading...</div>';
+            const userDoc = await getDoc(doc(db, 'users', uid));
+            let profile = { displayName: '', email: '', photoURL: '', followers: [], following: [] };
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+                if (data.profile) {
+                    profile = { ...profile, ...data.profile };
+                }
+                profile.followers = data.followers || [];
+                profile.following = data.following || [];
+            }
+            // Check if current user is following
+            let isFollowing = false;
+            if (currentUser && profile.followers.includes(currentUser.uid)) isFollowing = true;
+            let followBtn = '';
+            if (currentUser && currentUser.uid !== uid) {
+                followBtn = `<button class='btn btn-primary btn-small' id='searchFollowBtn'>${isFollowing ? 'Unfollow' : 'Follow'}</button>`;
+            }
+            profileDiv.innerHTML = `
+                <div style='display:flex;align-items:center;gap:15px;margin-bottom:10px;'>
+                    <img src='${profile.photoURL || ''}' alt='Avatar' style='width:48px;height:48px;border-radius:50%;object-fit:cover;background:#eee;'>
+                    <div style='flex:1;'>
+                        <div style='font-weight:500;font-size:1.1rem;'>${escapeHtml(profile.displayName || profile.email)}</div>
+                        <div style='color:#888;font-size:0.95rem;'>${escapeHtml(profile.email)}</div>
+                    </div>
+                    ${followBtn}
+                </div>
+                <div id='searchProfileMeals'></div>
+            `;
+            if (followBtn) {
+                document.getElementById('searchFollowBtn').onclick = async function() {
+                    await toggleFollow(uid, isFollowing);
+                    showSearchProfile(uid);
+                };
+            }
+            // Only show meals if following or self
+            if (isFollowing || (currentUser && currentUser.uid === uid)) {
+                const mealsCol = collection(db, 'users', uid, 'meals');
+                const mealsSnap = await getDocs(mealsCol);
+                const userMeals = [];
+                mealsSnap.forEach(docSnap => {
+                    const meal = docSnap.data();
+                    userMeals.push({ ...meal, id: docSnap.id });
+                });
+                // Sort meals by finalScore descending
+                userMeals.sort((a, b) => b.finalScore - a.finalScore);
+                const mealsDiv = document.getElementById('searchProfileMeals');
+                if (userMeals.length === 0) {
+                    mealsDiv.innerHTML = '<div style="color:#888;">No meals to show.</div>';
+                } else {
+                    mealsDiv.innerHTML = userMeals.map(meal => `
+                        <div style="background:#f9fafb;padding:10px 15px;margin-bottom:10px;border-radius:6px;display:flex;align-items:center;gap:10px;">
+                            <img src="${meal.image || ''}" alt="Meal" style="width:48px;height:48px;border-radius:6px;object-fit:cover;background:#eee;">
+                            <div style="flex:1;">
+                                <div style="font-weight:500;">${escapeHtml(meal.name)}</div>
+                                <div style="color:#888;font-size:0.9rem;">${meal.type} &middot; ${formatDate(meal.date)}</div>
+                            </div>
+                            <span style="font-weight:bold;color:var(--primary);font-size:1.2rem;">${meal.finalScore}</span>
+                            <button class="btn btn-primary btn-small" onclick="viewOtherUserMainFromButton('${uid}')">View</button>
+                        </div>
+                    `).join('');
+                }
+            } else {
+                document.getElementById('searchProfileMeals').innerHTML = '<div style="color:#888;">Follow to see meals.</div>';
+            }
+        }
+        window.showSearchProfile = showSearchProfile;
+        // View a meal from another user's profile in full page
+        async function viewOtherUserMealFull(userId, mealId) {
+            // Hide your own meal form and list, show other user meals view
+            window.viewingOtherUser = true;
+            document.getElementById('mainApp').querySelector('.form-section').classList.add('hidden');
+            document.getElementById('mainApp').querySelector('.meals-section').classList.add('hidden');
+            document.getElementById('otherUserMealsView').classList.remove('hidden');
+            // Fetch user profile
+            const userDoc = await getDoc(doc(db, 'users', userId));
+            let profile = { displayName: '', email: '', photoURL: '', followers: [], following: [] };
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+                if (data.profile) {
+                    profile = { ...profile, ...data.profile };
+                }
+            }
+            document.getElementById('otherUserEmail').textContent = profile.email || '';
+            document.getElementById('otherUserMealsTitle').textContent = `${profile.displayName || profile.email || 'User'}'s Meals`;
+            // Fetch meals
+            const mealsCol = collection(db, 'users', userId, 'meals');
+            const mealsSnap = await getDocs(mealsCol);
+            const userMeals = [];
+            let selectedMeal = null;
+            mealsSnap.forEach(docSnap => {
+                const meal = docSnap.data();
+                if (docSnap.id === mealId) selectedMeal = { ...meal, id: docSnap.id };
+            });
+            const container = document.getElementById('otherUserMealsContainer');
+            if (!selectedMeal) {
+                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;">Meal not found.</div>';
+            } else {
+                container.innerHTML = `
+                    <div class="meal-card" style="max-width:600px;margin:0 auto;">
+                        <img src="${selectedMeal.image || ''}" alt="${escapeHtml(selectedMeal.name)}" class="meal-image">
+                        <div class="meal-info">
+                            <div class="meal-header">
+                                <h3 class="meal-name">${escapeHtml(selectedMeal.name)}</h3>
+                                <span class="meal-score">${selectedMeal.finalScore}</span>
+                            </div>
+                            <div class="meal-meta">
+                                <span class="meal-type">${selectedMeal.type}</span>
+                                <span>${formatDate(selectedMeal.date)}</span>
+                            </div>
+                            <div class="meal-factors">
+                                <div class="factor-item" style="background-color: ${getHealthTasteColor(selectedMeal.health)}">
+                                    <div class="factor-icon"></div>
+                                    Health ${selectedMeal.health}
+                                </div>
+                                <div class="factor-item" style="background-color: ${getHealthTasteColor(selectedMeal.taste)}">
+                                    <div class="factor-icon"></div>
+                                    Taste ${selectedMeal.taste}
+                                </div>
+                                <div class="factor-item" style="background-color: ${getPersonalizedTimeColor(selectedMeal.time, selectedMeal.type)}">
+                                    <div class="factor-icon"></div>
+                                    ${selectedMeal.time} min
+                                </div>
+                                <div class="factor-item" style="background-color: ${getPersonalizedCostColor(selectedMeal.cost, selectedMeal.type)}">
+                                    <div class="factor-icon"></div>
+                                    $${selectedMeal.cost.toFixed(2)} PP
+                                </div>
+                            </div>
+                            ${selectedMeal.notes ? `<p class="meal-notes">${escapeHtml(selectedMeal.notes)}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            // Move header to very top
+            const mainHeader = document.getElementById('mainApp').querySelector('#otherUserMealsView > .container > div');
+            if (mainHeader) mainHeader.style.marginTop = '0';
+        }
+        window.viewOtherUserMealFull = viewOtherUserMealFull;
+        // Hide modal and show other user meals from follower view
+        async function viewOtherUserMainWithModalHide(uid) {
+            closeProfileModal();
+            closeFollowingModal();
+            await viewOtherUserMain(uid);
+        }
+        window.viewOtherUserMainWithModalHide = viewOtherUserMainWithModalHide;
+        // Hide modal and show other user meal from search listing
+        async function viewOtherUserMealFullWithModalHide(uid, mealId) {
+            closeSearchModal();
+            await viewOtherUserMealFull(uid, mealId);
+        }
+        window.viewOtherUserMealFullWithModalHide = viewOtherUserMealFullWithModalHide;
+        // Follow from followers list and update button to View
+        async function followFromFollowersList(uid, btn) {
+            await toggleFollow(uid, false);
+            btn.textContent = 'View';
+            btn.onclick = function() {
+                const mainContent = document.querySelector('.main-content');
+                if (mainContent) mainContent.style.display = 'block';
+                viewOtherUserMainFromButton(uid);
+            };
+        }
+        window.followFromFollowersList = followFromFollowersList;
+        // Following list modal logic
+        function showFollowingList() {
+            document.getElementById('followingModal').classList.add('active');
+            loadFollowingList();
+        }
+        function closeFollowingModal() {
+            document.getElementById('followingModal').classList.remove('active');
+        }
+        async function loadFollowingList() {
+            if (!currentUser) return;
+            const userRef = doc(db, 'users', currentUser.uid);
+            const userDocSnap = await getDoc(userRef);
+            let following = [];
+            if (userDocSnap.exists()) {
+                const data = userDocSnap.data();
+                following = data.following || [];
+            }
+            if (following.length === 0) {
+                document.getElementById('followingList').innerHTML = '<div style="color:#888;">You are not following anyone.</div>';
+                return;
+            }
+            // Fetch all user profiles
+            const usersQuery = await getDocs(collection(db, 'users'));
+            const followingProfiles = [];
+            usersQuery.forEach(docSnap => {
+                const data = docSnap.data();
+                if (data.profile && following.includes(data.profile.uid)) {
+                    followingProfiles.push(data.profile);
+                }
+            });
+            document.getElementById('followingList').innerHTML = followingProfiles.map(f => {
+                return `
+                    <div style='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee;'>
+                        <img src='${f.photoURL || ''}' alt='Avatar' style='width:32px;height:32px;border-radius:50%;object-fit:cover;background:#eee;'>
+                        <div style='flex:1;'>
+                            <div style='font-weight:500;'>${escapeHtml(f.displayName || f.email)}</div>
+                            <div style='color:#888;font-size:0.9rem;'>${escapeHtml(f.email)}</div>
+                        </div>
+                        <button class="btn btn-primary btn-small" onclick="viewOtherUserMainFromButton('${f.uid}')">View</button>
+                        <button class="btn btn-secondary btn-small" onclick="unfollowFromFollowingList('${f.uid}', this)">Unfollow</button>
+                    </div>
+                `;
+            }).join('');
+        }
+        window.showFollowingList = showFollowingList;
+        window.closeFollowingModal = closeFollowingModal;
+        async function unfollowFromFollowingList(uid, btn) {
+            await toggleFollow(uid, true);
+            btn.parentElement.remove();
+        }
+        window.unfollowFromFollowingList = unfollowFromFollowingList;
+
+        // Add this function near updateStats
+        function updateStatsForMeals(mealsArr) {
+            document.getElementById('totalMeals').textContent = mealsArr.length;
+            if (mealsArr.length > 0) {
+                const avgScore = Math.round(
+                    mealsArr.reduce((sum, m) => sum + m.finalScore, 0) / mealsArr.length
+                );
+                document.getElementById('avgScore').textContent = avgScore;
+                const best = mealsArr.reduce((best, m) => m.finalScore > best.finalScore ? m : best);
+                document.getElementById('bestMeal').textContent = 
+                    best.name.length > 15 ? best.name.substring(0, 15) + '...' : best.name;
+            } else {
+                document.getElementById('avgScore').textContent = '0';
+                document.getElementById('bestMeal').textContent = '—';
+            }
+        }
+
+        // New function to show other user meals in a unified way
+        async function showOtherUserMeals(userId) {
+            // Hide your own meal UI
+            document.getElementById('mainApp').querySelector('.form-section').classList.add('hidden');
+            document.getElementById('mainApp').querySelector('.meals-section').classList.add('hidden');
+            document.getElementById('mealsContainer').classList.add('hidden');
+            // Show other user meal UI
+            document.getElementById('otherUserMealsView').classList.remove('hidden');
+            document.getElementById('otherUserMealsView').style.display = 'block';
+            const container = document.getElementById('otherUserMealsContainer');
+            container.innerHTML = '';
+            container.style.display = 'block';
+            // Fetch user profile
+            const userDoc = await getDoc(doc(db, 'users', userId));
+            let profile = { displayName: '', email: '', photoURL: '', followers: [], following: [] };
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+                if (data.profile) {
+                    profile = { ...profile, ...data.profile };
+                }
+                profile.followers = data.followers || [];
+                profile.following = data.following || [];
+            }
+            document.getElementById('otherUserEmail').textContent = profile.email || '';
+            document.getElementById('otherUserMealsTitle').textContent = `${profile.displayName || profile.email || 'User'}'s Meals`;
+            // Show/hide unfollow button
+            let showUnfollow = false;
+            if (currentUser && profile.followers && profile.followers.includes(currentUser.uid)) showUnfollow = true;
+            const unfollowBtn = document.getElementById('unfollowOtherUserBtn');
+            if (unfollowBtn) {
+                if (showUnfollow) {
+                    unfollowBtn.style.display = '';
+                    unfollowBtn.onclick = async function() {
+                        await toggleFollow(userId, true);
+                        unfollowBtn.style.display = 'none';
+                    };
+                } else {
+                    unfollowBtn.style.display = 'none';
+                }
+            }
+            // Fetch meals
+            const mealsCol = collection(db, 'users', userId, 'meals');
+            const mealsSnap = await getDocs(mealsCol);
+            const userMeals = [];
+            mealsSnap.forEach(docSnap => {
+                const meal = docSnap.data();
+                userMeals.push({ ...meal, id: docSnap.id });
+            });
+            userMeals.sort((a, b) => b.finalScore - a.finalScore);
+            // Update metrics
+            updateStatsForMeals(userMeals);
+            // Render cards using the same layout as your own main screen (without edit/delete)
+            if (userMeals.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;">No meals to show.</div>';
+            } else {
+                container.innerHTML = userMeals.map(meal => `
+                    <div class="meal-card">
+                        <img src="${meal.image || ''}" alt="${escapeHtml(meal.name)}" class="meal-image">
+                        <div class="meal-info">
+                            <div class="meal-header">
+                                <h3 class="meal-name">${escapeHtml(meal.name)}</h3>
+                                <span class="meal-score">${meal.finalScore}</span>
+                            </div>
+                            <div class="meal-meta">
+                                <span class="meal-type">${meal.type}</span>
+                                <span>${formatDate(meal.date)}</span>
+                            </div>
+                            <div class="meal-factors">
+                                <div class="factor-item" style="background-color: ${getHealthTasteColor(meal.health)}">
+                                    <div class="factor-icon"></div>
+                                    Health ${meal.health}
+                                </div>
+                                <div class="factor-item" style="background-color: ${getHealthTasteColor(meal.taste)}">
+                                    <div class="factor-icon"></div>
+                                    Taste ${meal.taste}
+                                </div>
+                                <div class="factor-item" style="background-color: ${getPersonalizedTimeColor(meal.time, meal.type)}">
+                                    <div class="factor-icon"></div>
+                                    ${meal.time} min
+                                </div>
+                                <div class="factor-item" style="background-color: ${getPersonalizedCostColor(meal.cost, meal.type)}">
+                                    <div class="factor-icon"></div>
+                                    $${meal.cost.toFixed(2)} PP
+                                </div>
+                            </div>
+                            ${meal.notes ? `<p class="meal-notes">${escapeHtml(meal.notes)}</p>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            }
+            // Force visibility for debugging
+            container.style.display = 'block';
+            if (container.parentElement) container.parentElement.style.display = 'block';
+            document.getElementById('otherUserMealsView').style.display = 'block';
+            // If still not visible, check for duplicate IDs or hidden parents
+        }
+
+        // Add this global function near other window.* assignments
+        window.viewOtherUserMainFromButton = function(uid) {
+            console.log('[DEBUG] viewOtherUserMainFromButton called for uid:', uid);
+            // Hide any open modals
+            document.getElementById('profileModal')?.classList.remove('active');
+            document.getElementById('followingModal')?.classList.remove('active');
+            document.getElementById('searchModal')?.classList.remove('active');
+            // Clear search input and results
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('searchProfileView').innerHTML = '';
+            // Set main-content to block for other user view
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) mainContent.style.display = 'block';
+            viewOtherUserMain(uid);
+        };
     </script>
 </body>
 </html>
