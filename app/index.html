@@ -476,6 +476,51 @@
             color: white;
         }
 
+        /* NEW: Score Filter Tabs */
+        .score-filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .score-filter-label {
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .score-filter-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .score-filter-tab {
+            padding: 6px 12px;
+            border: 1px solid var(--gray-300);
+            background: white;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+            color: var(--gray-600);
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .score-filter-tab:hover {
+            background: var(--gray-100);
+            border-color: var(--gray-400);
+        }
+
+        .score-filter-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
         .meals-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -786,6 +831,80 @@
             text-align: left;
         }
 
+        /* NEW: Tie-breaking Modal Styles */
+        .ranking-modal {
+            z-index: 1300;
+        }
+
+        .ranking-list {
+            min-height: 200px;
+            border: 2px dashed var(--gray-300);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .ranking-item {
+            background: white;
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: move;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.2s;
+        }
+
+        .ranking-item:hover {
+            background: var(--gray-50);
+            border-color: var(--primary);
+        }
+
+        .ranking-item.dragging {
+            opacity: 0.7;
+            transform: rotate(2deg);
+        }
+
+        .ranking-number {
+            background: var(--primary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .ranking-item-details {
+            flex: 1;
+        }
+
+        .ranking-item-name {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .ranking-item-score {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+
+        .ranking-item-drag-handle {
+            color: var(--gray-400);
+            cursor: grab;
+        }
+
+        .ranking-item-drag-handle:active {
+            cursor: grabbing;
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -831,6 +950,10 @@
 
             .header-right {
                 flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .score-filter-tabs {
                 justify-content: center;
             }
         }
@@ -1144,6 +1267,18 @@
                         <button class="filter-tab" data-filter="dinner">Dinner</button>
                     </div>
 
+                    <!-- NEW: Score Filter Section -->
+                    <div class="score-filter-section">
+                        <div class="score-filter-label">Sort by Score Category:</div>
+                        <div class="score-filter-tabs">
+                            <button class="score-filter-tab active" data-score-filter="overall">Overall Score</button>
+                            <button class="score-filter-tab" data-score-filter="taste">Best Taste</button>
+                            <button class="score-filter-tab" data-score-filter="health">Healthiest</button>
+                            <button class="score-filter-tab" data-score-filter="time">Quickest</button>
+                            <button class="score-filter-tab" data-score-filter="cost">Most Affordable</button>
+                        </div>
+                    </div>
+
                     <div id="mealsContainer" class="meals-grid"></div>
                 </div>
             </div>
@@ -1161,6 +1296,26 @@
                         <button class="btn btn-primary" onclick="handleDuplicateReplace()">Replace</button>
                         <button class="btn btn-secondary" onclick="handleDuplicateRename()">Rename</button>
                         <button class="btn btn-secondary" onclick="handleDuplicateCancel()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW: Same Score Ranking Modal -->
+        <div id="rankingModal" class="modal ranking-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Rank These Dishes</h2>
+                    <button class="close-btn" onclick="closeRankingModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="rankingMessage">These dishes have the same rating. Drag to rank them from best to worst:</p>
+                    <div id="rankingList" class="ranking-list">
+                        <!-- Dynamically populated -->
+                    </div>
+                    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="saveRanking()">Save Ranking</button>
+                        <button class="btn btn-secondary" onclick="closeRankingModal()">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -1311,6 +1466,7 @@
         // Global variables
         let meals = [];
         let currentFilter = 'all';
+        let currentScoreFilter = 'overall'; // NEW: Track score filtering
         let editingMealId = null;
         let currentImageData = null;
         let currentUser = null;
@@ -1447,6 +1603,16 @@
                 });
             });
 
+            // NEW: Score filter listeners
+            document.querySelectorAll('.score-filter-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.score-filter-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentScoreFilter = tab.dataset.scoreFilter;
+                    renderMeals();
+                });
+            });
+
             // Image upload listeners
             setupImageUpload();
         }
@@ -1509,6 +1675,7 @@
                 // Reset app state
                 meals = [];
                 currentFilter = 'all';
+                currentScoreFilter = 'overall';
                 editingMealId = null;
                 currentImageData = null;
                 userAvgCost = { breakfast: 6, lunch: 10, dinner: 12 };
@@ -1572,7 +1739,7 @@
                 });
                 
                 // Sort by final score (highest first)
-                meals.sort((a, b) => b.finalScore - a.finalScore);
+                applySorting();
                 console.log('Meals loaded successfully:', meals.length);
             } catch (error) {
                 console.error('Error loading meals:', error);
@@ -1679,7 +1846,7 @@
             });
 
             if (updated) {
-                meals.sort((a, b) => b.finalScore - a.finalScore);
+                applySorting();
                 renderMeals();
                 updateStats();
                 updateScoreDisplay();
@@ -1751,8 +1918,11 @@
                 // Save to Firestore
                 await saveMeal(pendingMealData);
                 
-                // Sort by final score
-                meals.sort((a, b) => b.finalScore - a.finalScore);
+                // Sort by current criteria
+                applySorting();
+                
+                // NEW: Check for same scores and show ranking modal if needed
+                await checkForSameScoresAndRank();
                 
                 resetForm();
                 renderMeals();
@@ -1765,6 +1935,164 @@
             
             duplicateMealId = null;
             pendingMealData = null;
+        }
+
+        // NEW: Same Score Detection and Ranking
+        async function checkForSameScoresAndRank() {
+            const scoreGroups = {};
+            
+            // Group meals by final score
+            meals.forEach(meal => {
+                const baseScore = Math.floor(meal.finalScore);
+                if (!scoreGroups[baseScore]) {
+                    scoreGroups[baseScore] = [];
+                }
+                scoreGroups[baseScore].push(meal);
+            });
+            
+            // Find groups with more than one meal
+            for (const [score, group] of Object.entries(scoreGroups)) {
+                if (group.length > 1) {
+                    // Check if all have the same exact score (not already ranked)
+                    const exactScores = [...new Set(group.map(m => m.finalScore))];
+                    if (exactScores.length === 1) {
+                        await showRankingModal(group);
+                        return; // Only handle one group at a time
+                    }
+                }
+            }
+        }
+
+        async function showRankingModal(mealsToRank) {
+            document.getElementById('rankingMessage').textContent = 
+                `These ${mealsToRank.length} dishes have the same rating (${mealsToRank[0].finalScore}). Drag to rank them from best to worst:`;
+            
+            const rankingList = document.getElementById('rankingList');
+            rankingList.innerHTML = mealsToRank.map((meal, index) => `
+                <div class="ranking-item" data-meal-id="${meal.id}" draggable="true">
+                    <div class="ranking-number">${index + 1}</div>
+                    <div class="ranking-item-details">
+                        <div class="ranking-item-name">${escapeHtml(meal.name)}</div>
+                        <div class="ranking-item-score">Score: ${meal.finalScore}</div>
+                    </div>
+                    <div class="ranking-item-drag-handle">⋮⋮</div>
+                </div>
+            `).join('');
+            
+            // Set up drag and drop
+            setupRankingDragAndDrop();
+            
+            document.getElementById('rankingModal').classList.add('active');
+        }
+
+        function setupRankingDragAndDrop() {
+            const rankingList = document.getElementById('rankingList');
+            let draggedItem = null;
+            
+            rankingList.addEventListener('dragstart', (e) => {
+                if (e.target.classList.contains('ranking-item')) {
+                    draggedItem = e.target;
+                    e.target.classList.add('dragging');
+                }
+            });
+            
+            rankingList.addEventListener('dragend', (e) => {
+                if (e.target.classList.contains('ranking-item')) {
+                    e.target.classList.remove('dragging');
+                    updateRankingNumbers();
+                }
+            });
+            
+            rankingList.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(rankingList, e.clientY);
+                if (afterElement == null) {
+                    rankingList.appendChild(draggedItem);
+                } else {
+                    rankingList.insertBefore(draggedItem, afterElement);
+                }
+            });
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.ranking-item:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function updateRankingNumbers() {
+            const items = document.querySelectorAll('.ranking-item');
+            items.forEach((item, index) => {
+                const numberElement = item.querySelector('.ranking-number');
+                numberElement.textContent = index + 1;
+            });
+        }
+
+        async function saveRanking() {
+            const rankingItems = document.querySelectorAll('.ranking-item');
+            const baseScore = Math.floor(meals.find(m => m.id === rankingItems[0].dataset.mealId).finalScore);
+            
+            // Calculate fractional scores based on ranking
+            for (let i = 0; i < rankingItems.length; i++) {
+                const mealId = rankingItems[i].dataset.mealId;
+                const mealIndex = meals.findIndex(m => m.id === mealId);
+                
+                if (mealIndex !== -1) {
+                    // Calculate fractional score: best gets base score, others get decrements
+                    const fractionalScore = baseScore - (i * 0.33);
+                    meals[mealIndex].finalScore = Math.round(fractionalScore * 100) / 100;
+                    
+                    // Save to Firestore
+                    try {
+                        await saveMeal(meals[mealIndex]);
+                    } catch (error) {
+                        console.error('Error saving ranked meal:', error);
+                    }
+                }
+            }
+            
+            closeRankingModal();
+            applySorting();
+            renderMeals();
+            updateStats();
+        }
+
+        function closeRankingModal() {
+            document.getElementById('rankingModal').classList.remove('active');
+        }
+
+        // NEW: Sorting functions
+        function applySorting() {
+            switch (currentScoreFilter) {
+                case 'overall':
+                    meals.sort((a, b) => b.finalScore - a.finalScore);
+                    break;
+                case 'taste':
+                    meals.sort((a, b) => b.taste - a.taste);
+                    break;
+                case 'health':
+                    meals.sort((a, b) => b.health - a.health);
+                    break;
+                case 'time':
+                    // Lower time is better (ascending)
+                    meals.sort((a, b) => a.time - b.time);
+                    break;
+                case 'cost':
+                    // Lower cost is better (ascending)
+                    meals.sort((a, b) => a.cost - b.cost);
+                    break;
+                default:
+                    meals.sort((a, b) => b.finalScore - a.finalScore);
+            }
         }
 
         // Color functions for metrics
@@ -2045,1044 +2373,3 @@
             document.getElementById('mealForm').reset();
             currentImageData = null;
             editingMealId = null;
-            duplicateMealId = null;
-            pendingMealData = null;
-            
-            const imagePreview = document.getElementById('imagePreview');
-            const uploadText = document.getElementById('uploadText');
-            const imageUpload = document.getElementById('imageUpload');
-            
-            imagePreview.style.display = 'none';
-            uploadText.style.display = 'block';
-            imageUpload.classList.remove('has-image');
-            
-            document.getElementById('formTitle').textContent = 'Add New Meal';
-            document.getElementById('submitBtn').textContent = 'Add Meal';
-            document.getElementById('cancelBtn').classList.add('hidden');
-            
-            document.getElementById('healthScore').value = 50;
-            document.getElementById('tasteScore').value = 50;
-            document.getElementById('timeMinutes').value = 30;
-            document.getElementById('costDollars').value = 8;
-            updateScoreDisplay();
-        }
-
-        function createDefaultImage() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 400;
-            canvas.height = 300;
-            const ctx = canvas.getContext('2d');
-            
-            ctx.fillStyle = '#E5E7EB';
-            ctx.fillRect(0, 0, 400, 300);
-            
-            ctx.fillStyle = '#9CA3AF';
-            ctx.font = '20px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('No Image', 200, 150);
-            
-            return canvas.toDataURL();
-        }
-
-        // Render meals
-        function renderMeals() {
-            if (window.viewingOtherUser) return;
-            const container = document.getElementById('mealsContainer');
-            container.classList.remove('other-user-grid');
-            container.classList.remove('horizontal-scroll');
-            container.style.justifyContent = '';
-            const mainContent = document.querySelector('.main-content');
-            if (mainContent) mainContent.style.display = 'grid';
-            const filteredMeals = currentFilter === 'all' ? 
-                meals : 
-                meals.filter(m => m.type === currentFilter);
-            
-            if (filteredMeals.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state" style="grid-column: 1/-1;">
-                        <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin: 0 auto 20px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                        </svg>
-                        <h3>No meals yet</h3>
-                        <p>Start tracking your culinary adventures!</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = filteredMeals.map(meal => `
-                <div class="meal-card" onclick="showMealDetails('${meal.id}')">
-                    <img src="${meal.image}" alt="${escapeHtml(meal.name)}" class="meal-image">
-                    <div class="meal-info">
-                        <div class="meal-header">
-                            <h3 class="meal-name">${escapeHtml(meal.name)}</h3>
-                            <span class="meal-score">${meal.finalScore}</span>
-                        </div>
-                        <div class="meal-meta">
-                            <span class="meal-type">${meal.type}</span>
-                            <span>${formatDate(meal.date)}</span>
-                        </div>
-                        <div class="meal-factors">
-                            <div class="factor-item" style="background-color: ${getHealthTasteColor(meal.health)}">
-                                <div class="factor-icon"></div>
-                                Health ${meal.health}
-                            </div>
-                            <div class="factor-item" style="background-color: ${getHealthTasteColor(meal.taste)}">
-                                <div class="factor-icon"></div>
-                                Taste ${meal.taste}
-                            </div>
-                            <div class="factor-item" style="background-color: ${getPersonalizedTimeColor(meal.time, meal.type)}">
-                                <div class="factor-icon"></div>
-                                ${meal.time} min
-                            </div>
-                            <div class="factor-item" style="background-color: ${getPersonalizedCostColor(meal.cost, meal.type)}">
-                                <div class="factor-icon"></div>
-                                $${meal.cost.toFixed(2)} PP
-                            </div>
-                        </div>
-                        ${meal.notes ? `<p class="meal-notes">${escapeHtml(meal.notes)}</p>` : ''}
-                        <div class="meal-actions" onclick="event.stopPropagation()">
-                            <button class="btn btn-primary btn-small" onclick="editMeal('${meal.id}')">Edit</button>
-                            <button class="btn btn-secondary btn-small" onclick="deleteMeal('${meal.id}')">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Update statistics
-        function updateStats() {
-            const filteredMeals = currentFilter === 'all' ? 
-                meals : 
-                meals.filter(m => m.type === currentFilter);
-            
-            document.getElementById('totalMeals').textContent = filteredMeals.length;
-            
-            if (filteredMeals.length > 0) {
-                const avgScore = Math.round(
-                    filteredMeals.reduce((sum, m) => sum + m.finalScore, 0) / filteredMeals.length
-                );
-                document.getElementById('avgScore').textContent = avgScore;
-                
-                const best = filteredMeals.reduce((best, m) => m.finalScore > best.finalScore ? m : best);
-                document.getElementById('bestMeal').textContent = 
-                    best.name.length > 15 ? best.name.substring(0, 15) + '...' : best.name;
-            } else {
-                document.getElementById('avgScore').textContent = '0';
-                document.getElementById('bestMeal').textContent = '—';
-            }
-        }
-
-        // Edit meal
-        function editMeal(id) {
-            const meal = meals.find(m => m.id === id);
-            if (!meal) return;
-            
-            editingMealId = id;
-            document.getElementById('mealName').value = meal.name;
-            document.getElementById('healthScore').value = meal.health;
-            document.getElementById('tasteScore').value = meal.taste;
-            document.getElementById('timeMinutes').value = meal.time;
-            document.getElementById('costDollars').value = meal.cost;
-            document.getElementById('mealType').value = meal.type;
-            document.getElementById('mealNotes').value = meal.notes || '';
-            
-            if (meal.image) {
-                currentImageData = meal.image;
-                const imagePreview = document.getElementById('imagePreview');
-                const uploadText = document.getElementById('uploadText');
-                const imageUpload = document.getElementById('imageUpload');
-                
-                imagePreview.src = meal.image;
-                imagePreview.style.display = 'block';
-                uploadText.style.display = 'none';
-                imageUpload.classList.add('has-image');
-            }
-            
-            document.getElementById('formTitle').textContent = 'Edit Meal';
-            document.getElementById('submitBtn').textContent = 'Update Meal';
-            document.getElementById('cancelBtn').classList.remove('hidden');
-            
-            updateScoreDisplay();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Delete meal
-        async function deleteMeal(id) {
-            if (confirm('Are you sure you want to delete this meal?')) {
-                try {
-                    const meal = meals.find(m => m.id === id);
-                    if (meal) {
-                        await deleteMealFromFirestore(meal.name);
-                        meals = meals.filter(m => m.id !== id);
-                        renderMeals();
-                        updateStats();
-                    }
-                } catch (error) {
-                    console.error('Error deleting meal:', error);
-                    alert('Error deleting meal. Please try again.');
-                }
-            }
-        }
-
-        // Show meal details
-        function showMealDetails(id) {
-            const meal = meals.find(m => m.id === id);
-            if (!meal) return;
-            document.getElementById('modalTitle').textContent = meal.name;
-            document.getElementById('modalImage').src = meal.image;
-            document.getElementById('modalFinalScore').textContent = meal.finalScore;
-            document.getElementById('modalHealthValue').textContent = meal.health;
-            document.getElementById('modalTasteValue').textContent = meal.taste;
-            document.getElementById('modalTimeValue').textContent = meal.time + ' min';
-            document.getElementById('modalCostValue').textContent = '$' + meal.cost.toFixed(2);
-            document.getElementById('modalHealthBreakdown').style.backgroundColor = getHealthTasteColor(meal.health);
-            document.getElementById('modalTasteBreakdown').style.backgroundColor = getHealthTasteColor(meal.taste);
-            document.getElementById('modalTimeBreakdown').style.backgroundColor = getPersonalizedTimeColor(meal.time, meal.type);
-            document.getElementById('modalCostBreakdown').style.backgroundColor = getPersonalizedCostColor(meal.cost, meal.type);
-            document.getElementById('modalType').textContent = meal.type;
-            document.getElementById('modalDate').textContent = formatDate(meal.date);
-            if (meal.notes) {
-                document.getElementById('modalNotes').textContent = meal.notes;
-                document.getElementById('modalNotesContainer').classList.remove('hidden');
-            } else {
-                document.getElementById('modalNotesContainer').classList.add('hidden');
-            }
-            document.getElementById('mealModal').classList.add('active');
-        }
-
-        // Close modal
-        function closeModal() {
-            document.getElementById('mealModal').classList.remove('active');
-        }
-
-        // Online/Offline Detection
-        function updateOnlineStatus() {
-            const offlineIndicator = document.getElementById('offlineIndicator');
-            if (navigator.onLine) {
-                offlineIndicator.classList.remove('show');
-            } else {
-                offlineIndicator.classList.add('show');
-            }
-        }
-
-        // Utility functions
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function formatDate(dateInput) {
-            // Handles Firestore Timestamp, ISO string, or Date
-            let date;
-            if (!dateInput) return 'Unknown';
-            if (typeof dateInput === 'object' && typeof dateInput.toDate === 'function') {
-                date = dateInput.toDate();
-            } else if (typeof dateInput === 'string') {
-                const parsed = Date.parse(dateInput);
-                if (!isNaN(parsed)) {
-                    date = new Date(parsed);
-                } else {
-                    return 'Unknown';
-                }
-            } else if (dateInput instanceof Date) {
-                date = dateInput;
-            } else {
-                return 'Unknown';
-            }
-            const now = new Date();
-            const diffTime = Math.abs(now - date);
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            if (diffDays === 0) return 'Today';
-            if (diffDays === 1) return 'Yesterday';
-            if (diffDays < 7) return `${diffDays} days ago`;
-            return date.toLocaleDateString();
-        }
-
-        // Make functions global for onclick handlers
-        window.openSettings = openSettings;
-        window.closeSettings = closeSettings;
-        window.saveSettings = saveSettings;
-        window.closeModal = closeModal;
-        window.editMeal = editMeal;
-        window.deleteMeal = deleteMeal;
-        window.showMealDetails = showMealDetails;
-        window.handleDuplicateReplace = handleDuplicateReplace;
-        window.handleDuplicateRename = handleDuplicateRename;
-        window.handleDuplicateCancel = handleDuplicateCancel;
-
-        // Initialize the app when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🌟 DOM loaded, starting app...');
-            initApp();
-        });
-
-        // Also try window load as backup
-        window.addEventListener('load', () => {
-            console.log('🌟 Window loaded, ensuring app started...');
-            // Only init if not already done
-            if (!auth.currentUser && authScreen.classList.contains('hidden')) {
-                initApp();
-            }
-        });
-
-        // --- User Search & Profile Logic ---
-        // Open/close modals
-        function openSearchModal() {
-            document.getElementById('searchModal').classList.add('active');
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchResults').innerHTML = '';
-            document.getElementById('searchProfileView').innerHTML = '';
-            document.getElementById('searchInput').focus();
-        }
-        function closeSearchModal() {
-            document.getElementById('searchModal').classList.remove('active');
-        }
-        function openProfileModal(user) {
-            document.getElementById('profileModal').classList.add('active');
-            loadProfile(user);
-        }
-        function closeProfileModal() {
-            document.getElementById('profileModal').classList.remove('active');
-        }
-        // Search users in Firestore
-        async function searchUsers(query) {
-            if (!query || query.length < 2) return [];
-            const usersRef = collection(db, 'users');
-            const snapshot = await getDocs(usersRef);
-            const results = [];
-            snapshot.forEach(docSnap => {
-                const data = docSnap.data();
-                if (!data || !data.profile) return;
-                const { displayName, email, photoURL, uid } = data.profile;
-                if (
-                    (displayName && displayName.toLowerCase().includes(query.toLowerCase())) ||
-                    (email && email.toLowerCase().includes(query.toLowerCase()))
-                ) {
-                    if (!currentUser || uid !== currentUser.uid) {
-                    results.push({ uid, displayName, email, photoURL });
-                    }
-                }
-            });
-            return results;
-        }
-        // Render search results
-        async function handleSearchInput(e) {
-            const query = e.target.value.trim();
-            const resultsDiv = document.getElementById('searchResults');
-            document.getElementById('searchProfileView').innerHTML = '';
-            resultsDiv.innerHTML = '<div style="color:#888;">Searching...</div>';
-            const users = await searchUsers(query);
-            if (users.length === 0) {
-                resultsDiv.innerHTML = '<div style="color:#888;">No users found.</div>';
-                return;
-            }
-            resultsDiv.innerHTML = users.map(u => `
-                <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee;">
-                    <img src="${u.photoURL || ''}" alt="Avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;background:#eee;">
-                    <div style="flex:1;">
-                        <div style="font-weight:500;">${escapeHtml(u.displayName || u.email)}</div>
-                        <div style="color:#888;font-size:0.9rem;">${escapeHtml(u.email)}</div>
-                    </div>
-                    <button class="btn btn-primary btn-small" onclick="showSearchProfile('${u.uid}')">View</button>
-                </div>
-            `).join('');
-        }
-        document.getElementById('searchInput').addEventListener('input', debounce(handleSearchInput, 400));
-        // Debounce helper
-        function debounce(fn, delay) {
-            let timer;
-            return function(...args) {
-                clearTimeout(timer);
-                timer = setTimeout(() => fn.apply(this, args), delay);
-            };
-        }
-        // View profile
-        async function viewProfile(uid) {
-            closeSearchModal();
-            openProfileModal(uid);
-        }
-        // Load profile data and meals
-        async function loadProfile(uid) {
-            const profileName = document.getElementById('profileName');
-            const profileAvatar = document.getElementById('profileAvatar');
-            const profileEmail = document.getElementById('profileEmail');
-            const profileFollowers = document.getElementById('profileFollowers');
-            const profileFollowing = document.getElementById('profileFollowing');
-            const followBtn = document.getElementById('followBtn');
-            const profileMeals = document.getElementById('profileMeals');
-            const followersSection = document.getElementById('followersSection');
-            // Fetch user profile
-            const userDoc = await getDoc(doc(db, 'users', uid));
-            let profile = { displayName: '', email: '', photoURL: '', followers: [], following: [] };
-            if (userDoc.exists()) {
-                const data = userDoc.data();
-                if (data.profile) {
-                    profile = { ...profile, ...data.profile };
-                }
-                profile.followers = data.followers || [];
-                profile.following = data.following || [];
-            }
-            profileName.textContent = profile.displayName || profile.email || 'User';
-            profileAvatar.src = profile.photoURL || '';
-            profileEmail.textContent = profile.email || '';
-            profileFollowers.textContent = `${profile.followers.length} follower${profile.followers.length === 1 ? '' : 's'}`;
-            profileFollowing.textContent = `${profile.following.length} following`;
-            // Show/hide follow button
-            if (currentUser && currentUser.uid !== uid) {
-                followBtn.style.display = '';
-                followBtn.textContent = profile.followers.includes(currentUser.uid) ? 'Unfollow' : 'Follow';
-                followBtn.onclick = async function() {
-                    await toggleFollow(uid, profile.followers.includes(currentUser.uid));
-                    await loadProfile(uid);
-                };
-            } else {
-                followBtn.style.display = 'none';
-            }
-            // Hide meals if viewing own profile
-            if (currentUser && currentUser.uid === uid) {
-                profileMeals.innerHTML = '';
-            } else {
-                // Hide meals in modal for others
-                profileMeals.innerHTML = '<div style="color:#888;">Meals are now shown in the main view. Use the View button in followers/search.</div>';
-            }
-            // Show followers list if viewing own profile
-            if (currentUser && currentUser.uid === uid && profile.followers.length > 0) {
-                // Fetch all follower profiles
-                const followersQuery = await getDocs(collection(db, 'users'));
-                const followersList = [];
-                followersQuery.forEach(docSnap => {
-                    const data = docSnap.data();
-                    if (data.profile && profile.followers.includes(data.profile.uid)) {
-                        followersList.push(data.profile);
-                    }
-                });
-                followersSection.innerHTML = `<h3 style='margin:20px 0 10px;'>Followers (${followersList.length})</h3>` +
-                    followersList.map(f => {
-                        const isFollowing = profile.following && profile.following.includes(f.uid);
-                        return `
-                        <div style='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee;'>
-                            <img src='${f.photoURL || ''}' alt='Avatar' style='width:32px;height:32px;border-radius:50%;object-fit:cover;background:#eee;'>
-                            <div style='flex:1;'>
-                                <div style='font-weight:500;'>${escapeHtml(f.displayName || f.email)}</div>
-                                <div style='color:#888;font-size:0.9rem;'>${escapeHtml(f.email)}</div>
-                            </div>
-                                ${isFollowing
-                                    ? `<button class="btn btn-primary btn-small" onclick="viewOtherUserMainFromButton('${f.uid}')">View</button>`
-                                    : `<button class="btn btn-primary btn-small" onclick="followFromFollowersList('${f.uid}', this)">Follow</button>`
-                                }
-                        </div>
-                        `;
-                    }).join('');
-            } else {
-                followersSection.innerHTML = '';
-            }
-        }
-        // View other user's meals in main app area
-        async function viewOtherUserMain(userId) {
-            console.log('[DEBUG] Entering viewOtherUserMain for userId:', userId);
-            if (currentUser && userId === currentUser.uid) {
-                window.viewingOtherUser = false;
-                document.getElementById('mainApp').querySelector('.form-section').classList.remove('hidden');
-                document.getElementById('mealsContainer').classList.remove('hidden');
-                document.getElementById('otherUserInfoBar')?.remove();
-                renderMeals();
-                updateStats();
-                console.log('[DEBUG] Returned to own meals view (self)');
-                return;
-            }
-            window.viewingOtherUser = true;
-            document.getElementById('mainApp').querySelector('.form-section').classList.add('hidden');
-            document.getElementById('mealsContainer').classList.remove('hidden');
-            // Place info bar above stats
-            let infoBar = document.getElementById('otherUserInfoBar');
-            if (infoBar) infoBar.remove(); // Remove any existing bar to avoid duplicates
-            infoBar = document.createElement('div');
-            infoBar.id = 'otherUserInfoBar';
-            infoBar.style.display = 'flex';
-            infoBar.style.alignItems = 'center';
-            infoBar.style.justifyContent = 'space-between';
-            infoBar.style.margin = '20px 0 10px 0';
-            infoBar.innerHTML = `
-                <div id="otherUserInfoText"></div>
-                <div style="display:flex;gap:10px;">
-                    <button class="btn btn-secondary" id="backToMyMealsBtn" type="button">Back to My Meals</button>
-                    <button class="btn btn-primary" id="unfollowOtherUserBtn" type="button">Unfollow</button>
-                </div>
-            `;
-            // Insert above stats
-            const stats = document.querySelector('.stats');
-            stats.parentNode.insertBefore(infoBar, stats);
-            infoBar.classList.remove('hidden');
-            // Fetch user profile
-            const userDoc = await getDoc(doc(db, 'users', userId));
-            let profile = { displayName: '', email: '', photoURL: '', followers: [], following: [] };
-            if (userDoc.exists()) {
-                const data = userDoc.data();
-                if (data.profile) {
-                    profile = { ...profile, ...data.profile };
-                }
-                profile.followers = data.followers || [];
-                profile.following = data.following || [];
-            }
-            document.getElementById('otherUserInfoText').innerHTML = `<strong>${escapeHtml(profile.displayName || profile.email || 'User')}</strong> &middot; <span style='color:#666;font-size:0.95rem;'>${escapeHtml(profile.email || '')}</span>`;
-            // Delegated event handler for info bar buttons
-            if (!window._otherUserBarDelegation) {
-                window._otherUserBarDelegation = async function(e) {
-                    if (e.target && e.target.id === 'backToMyMealsBtn') {
-                        console.log('[DEBUG] Delegated: Back to My Meals button clicked');
-                        window.viewingOtherUser = false;
-                        document.getElementById('mainApp').querySelector('.form-section').classList.remove('hidden');
-                        document.getElementById('mealsContainer').classList.remove('hidden');
-                        document.getElementById('otherUserInfoBar')?.remove();
-                        renderMeals();
-                        updateStats();
-                        console.log('[DEBUG] Returned to own meals view');
-                    }
-                    if (e.target && e.target.id === 'unfollowOtherUserBtn') {
-                        console.log('[DEBUG] Delegated: Unfollow button clicked');
-                    await toggleFollow(userId, true);
-                        document.getElementById('unfollowOtherUserBtn').style.display = 'none';
-                        console.log('[DEBUG] Unfollowed user, returning to own meals');
-                        window.viewingOtherUser = false;
-                        document.getElementById('mainApp').querySelector('.form-section').classList.remove('hidden');
-                        document.getElementById('mealsContainer').classList.remove('hidden');
-                        document.getElementById('otherUserInfoBar')?.remove();
-                        renderMeals();
-                        updateStats();
-                        console.log('[DEBUG] Returned to own meals view');
-                    }
-                };
-                document.addEventListener('click', window._otherUserBarDelegation, true);
-            }
-            // Fetch meals
-            const mealsCol = collection(db, 'users', userId, 'meals');
-            const mealsSnap = await getDocs(mealsCol);
-            let userMeals = [];
-            mealsSnap.forEach(docSnap => {
-                const meal = docSnap.data();
-                userMeals.push({ ...meal, id: docSnap.id });
-            });
-            // Filtering logic
-            let filter = 'all';
-            const filterTabs = document.querySelectorAll('.filter-tab');
-            filterTabs.forEach(tab => {
-                tab.classList.remove('active');
-                if (tab.dataset.filter === 'all') tab.classList.add('active');
-                tab.onclick = () => {
-                    filterTabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    filter = tab.dataset.filter;
-                    console.log('[DEBUG] Filter tab clicked:', filter);
-                    renderOtherUserMealsFiltered();
-                };
-            });
-            function renderOtherUserMealsFiltered() {
-                let filteredMeals = filter === 'all' ? userMeals : userMeals.filter(m => m.type === filter);
-                filteredMeals.sort((a, b) => b.finalScore - a.finalScore);
-                updateStatsForMeals(filteredMeals);
-                const container = document.getElementById('mealsContainer');
-                if (window.viewingOtherUser) {
-                    container.classList.add('other-user-grid');
-                    container.classList.remove('horizontal-scroll');
-                } else {
-                    container.classList.remove('other-user-grid');
-                    container.classList.remove('horizontal-scroll');
-                }
-                if (filteredMeals.length === 0) {
-                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;">No meals to show.</div>';
-            } else {
-                    container.innerHTML = filteredMeals.map(meal => `
-                        <div class="meal-card">
-                            <img src="${meal.image || ''}" alt="${escapeHtml(meal.name)}" class="meal-image">
-                            <div class="meal-info">
-                                <div class="meal-header">
-                                    <h3 class="meal-name">${escapeHtml(meal.name)}</h3>
-                                    <span class="meal-score">${meal.finalScore}</span>
-                        </div>
-                                <div class="meal-meta">
-                                    <span class="meal-type">${meal.type}</span>
-                                    <span>${formatDate(meal.date)}</span>
-                                </div>
-                                <div class="meal-factors">
-                                    <div class="factor-item" style="background-color: ${getHealthTasteColor(meal.health)}">
-                                        <div class="factor-icon"></div>
-                                        Health ${meal.health}
-                                    </div>
-                                    <div class="factor-item" style="background-color: ${getHealthTasteColor(meal.taste)}">
-                                        <div class="factor-icon"></div>
-                                        Taste ${meal.taste}
-                                    </div>
-                                    <div class="factor-item" style="background-color: ${getPersonalizedTimeColor(meal.time, meal.type)}">
-                                        <div class="factor-icon"></div>
-                                        ${meal.time} min
-                                    </div>
-                                    <div class="factor-item" style="background-color: ${getPersonalizedCostColor(meal.cost, meal.type)}">
-                                        <div class="factor-icon"></div>
-                                        $${meal.cost.toFixed(2)} PP
-                                    </div>
-                                </div>
-                                ${meal.notes ? `<p class="meal-notes">${escapeHtml(meal.notes)}</p>` : ''}
-                            </div>
-                    </div>
-                `).join('');
-            }
-                console.log('[DEBUG] Rendered other user meals, count:', filteredMeals.length);
-            }
-            renderOtherUserMealsFiltered();
-            console.log('[DEBUG] Finished viewOtherUserMain setup');
-        }
-        window.viewOtherUserMain = viewOtherUserMain;
-        // Back to my meals
-        document.getElementById('backToMyMealsBtn').addEventListener('click', () => {
-            window.viewingOtherUser = false;
-            document.getElementById('mainApp').querySelector('.form-section').classList.remove('hidden');
-            document.getElementById('mealsContainer').classList.remove('hidden');
-            renderMeals();
-            updateStats(); // Restore your own stats
-        });
-        // Toggle follow/unfollow
-        async function toggleFollow(targetUid, isFollowing) {
-            if (!currentUser) return;
-            const userRef = doc(db, 'users', currentUser.uid);
-            const targetRef = doc(db, 'users', targetUid);
-            // Get both docs
-            const [userDoc, targetDoc] = await Promise.all([getDoc(userRef), getDoc(targetRef)]);
-            let userData = userDoc.exists() ? userDoc.data() : {};
-            let targetData = targetDoc.exists() ? targetDoc.data() : {};
-            userData.following = userData.following || [];
-            targetData.followers = targetData.followers || [];
-            if (isFollowing) {
-                userData.following = userData.following.filter(uid => uid !== targetUid);
-                targetData.followers = targetData.followers.filter(uid => uid !== currentUser.uid);
-            } else {
-                userData.following.push(targetUid);
-                targetData.followers.push(currentUser.uid);
-            }
-            // Save both
-            await Promise.all([
-                setDoc(userRef, { ...userData }, { merge: true }),
-                setDoc(targetRef, { ...targetData }, { merge: true })
-            ]);
-        }
-        // Save user profile info on sign in
-        async function saveUserProfileIfNeeded() {
-            if (!currentUser) return;
-            const userRef = doc(db, 'users', currentUser.uid);
-            const userDocSnap = await getDoc(userRef);
-            if (!userDocSnap.exists() || !userDocSnap.data().profile) {
-                await setDoc(userRef, {
-                    profile: {
-                        uid: currentUser.uid,
-                        displayName: currentUser.displayName || '',
-                        email: currentUser.email || '',
-                        photoURL: currentUser.photoURL || ''
-                    },
-                    followers: [],
-                    following: []
-                }, { merge: true });
-            }
-        }
-        // Call saveUserProfileIfNeeded after sign in
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                await saveUserProfileIfNeeded();
-            }
-        });
-        // Make new functions global
-        window.openSearchModal = openSearchModal;
-        window.closeSearchModal = closeSearchModal;
-        window.openProfileModal = openProfileModal;
-        window.closeProfileModal = closeProfileModal;
-        window.viewProfile = viewProfile;
-        // View a meal from another user's profile
-        async function viewOtherUserMeal(userId, mealId) {
-            // Fetch meal from Firestore
-            const mealDoc = await getDoc(doc(db, 'users', userId, 'meals', mealId));
-            if (!mealDoc.exists()) {
-                alert('Meal not found.');
-                return;
-            }
-            const meal = mealDoc.data();
-            // Populate modal fields
-            document.getElementById('modalTitle').textContent = meal.name;
-            document.getElementById('modalImage').src = meal.image;
-            document.getElementById('modalFinalScore').textContent = meal.finalScore;
-            document.getElementById('modalHealthValue').textContent = meal.health;
-            document.getElementById('modalTasteValue').textContent = meal.taste;
-            document.getElementById('modalTimeValue').textContent = meal.time + ' min';
-            document.getElementById('modalCostValue').textContent = '$' + meal.cost.toFixed(2);
-            document.getElementById('modalHealthBreakdown').style.backgroundColor = getHealthTasteColor(meal.health);
-            document.getElementById('modalTasteBreakdown').style.backgroundColor = getHealthTasteColor(meal.taste);
-            document.getElementById('modalTimeBreakdown').style.backgroundColor = getPersonalizedTimeColor(meal.time, meal.type);
-            document.getElementById('modalCostBreakdown').style.backgroundColor = getPersonalizedCostColor(meal.cost, meal.type);
-            document.getElementById('modalType').textContent = meal.type;
-            document.getElementById('modalDate').textContent = formatDate(meal.date);
-            if (meal.notes) {
-                document.getElementById('modalNotes').textContent = meal.notes;
-                document.getElementById('modalNotesContainer').classList.remove('hidden');
-            } else {
-                document.getElementById('modalNotesContainer').classList.add('hidden');
-            }
-            document.getElementById('mealModal').classList.add('active');
-        }
-        window.viewOtherUserMeal = viewOtherUserMeal;
-        // Open your own profile
-        function openMyProfile() {
-            if (currentUser) {
-                openProfileModal(currentUser.uid);
-            }
-        }
-        window.openMyProfile = openMyProfile;
-        // Show user profile and meals in search modal
-        async function showSearchProfile(uid) {
-            const profileDiv = document.getElementById('searchProfileView');
-            profileDiv.innerHTML = '<div style="color:#888;">Loading...</div>';
-            const userDoc = await getDoc(doc(db, 'users', uid));
-            let profile = { displayName: '', email: '', photoURL: '', followers: [], following: [] };
-            if (userDoc.exists()) {
-                const data = userDoc.data();
-                if (data.profile) {
-                    profile = { ...profile, ...data.profile };
-                }
-                profile.followers = data.followers || [];
-                profile.following = data.following || [];
-            }
-            // Check if current user is following
-            let isFollowing = false;
-            if (currentUser && profile.followers.includes(currentUser.uid)) isFollowing = true;
-            let followBtn = '';
-            if (currentUser && currentUser.uid !== uid) {
-                followBtn = `<button class='btn btn-primary btn-small' id='searchFollowBtn'>${isFollowing ? 'Unfollow' : 'Follow'}</button>`;
-            }
-            profileDiv.innerHTML = `
-                <div style='display:flex;align-items:center;gap:15px;margin-bottom:10px;'>
-                    <img src='${profile.photoURL || ''}' alt='Avatar' style='width:48px;height:48px;border-radius:50%;object-fit:cover;background:#eee;'>
-                    <div style='flex:1;'>
-                        <div style='font-weight:500;font-size:1.1rem;'>${escapeHtml(profile.displayName || profile.email)}</div>
-                        <div style='color:#888;font-size:0.95rem;'>${escapeHtml(profile.email)}</div>
-                    </div>
-                    ${followBtn}
-                </div>
-                <div id='searchProfileMeals'></div>
-            `;
-            if (followBtn) {
-                document.getElementById('searchFollowBtn').onclick = async function() {
-                    await toggleFollow(uid, isFollowing);
-                    showSearchProfile(uid);
-                };
-            }
-            // Only show meals if following or self
-            if (isFollowing || (currentUser && currentUser.uid === uid)) {
-                const mealsCol = collection(db, 'users', uid, 'meals');
-                const mealsSnap = await getDocs(mealsCol);
-                const userMeals = [];
-                mealsSnap.forEach(docSnap => {
-                    const meal = docSnap.data();
-                    userMeals.push({ ...meal, id: docSnap.id });
-                });
-                // Sort meals by finalScore descending
-                userMeals.sort((a, b) => b.finalScore - a.finalScore);
-                const mealsDiv = document.getElementById('searchProfileMeals');
-                if (userMeals.length === 0) {
-                    mealsDiv.innerHTML = '<div style="color:#888;">No meals to show.</div>';
-                } else {
-                    mealsDiv.innerHTML = userMeals.map(meal => `
-                        <div style="background:#f9fafb;padding:10px 15px;margin-bottom:10px;border-radius:6px;display:flex;align-items:center;gap:10px;">
-                            <img src="${meal.image || ''}" alt="Meal" style="width:48px;height:48px;border-radius:6px;object-fit:cover;background:#eee;">
-                            <div style="flex:1;">
-                                <div style="font-weight:500;">${escapeHtml(meal.name)}</div>
-                                <div style="color:#888;font-size:0.9rem;">${meal.type} &middot; ${formatDate(meal.date)}</div>
-                            </div>
-                            <span style="font-weight:bold;color:var(--primary);font-size:1.2rem;">${meal.finalScore}</span>
-                            <button class="btn btn-primary btn-small" onclick="viewOtherUserMainFromButton('${uid}')">View</button>
-                        </div>
-                    `).join('');
-                }
-            } else {
-                document.getElementById('searchProfileMeals').innerHTML = '<div style="color:#888;">Follow to see meals.</div>';
-            }
-        }
-        window.showSearchProfile = showSearchProfile;
-        // View a meal from another user's profile in full page
-        async function viewOtherUserMealFull(userId, mealId) {
-            // Hide your own meal form and list, show other user meals view
-            window.viewingOtherUser = true;
-            document.getElementById('mainApp').querySelector('.form-section').classList.add('hidden');
-            document.getElementById('mainApp').querySelector('.meals-section').classList.add('hidden');
-            document.getElementById('otherUserMealsView').classList.remove('hidden');
-            // Fetch user profile
-            const userDoc = await getDoc(doc(db, 'users', userId));
-            let profile = { displayName: '', email: '', photoURL: '', followers: [], following: [] };
-            if (userDoc.exists()) {
-                const data = userDoc.data();
-                if (data.profile) {
-                    profile = { ...profile, ...data.profile };
-                }
-            }
-            document.getElementById('otherUserEmail').textContent = profile.email || '';
-            document.getElementById('otherUserMealsTitle').textContent = `${profile.displayName || profile.email || 'User'}'s Meals`;
-            // Fetch meals
-            const mealsCol = collection(db, 'users', userId, 'meals');
-            const mealsSnap = await getDocs(mealsCol);
-            const userMeals = [];
-            let selectedMeal = null;
-            mealsSnap.forEach(docSnap => {
-                const meal = docSnap.data();
-                if (docSnap.id === mealId) selectedMeal = { ...meal, id: docSnap.id };
-            });
-            const container = document.getElementById('otherUserMealsContainer');
-            if (!selectedMeal) {
-                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;">Meal not found.</div>';
-            } else {
-                container.innerHTML = `
-                    <div class="meal-card" style="max-width:600px;margin:0 auto;">
-                        <img src="${selectedMeal.image || ''}" alt="${escapeHtml(selectedMeal.name)}" class="meal-image">
-                        <div class="meal-info">
-                            <div class="meal-header">
-                                <h3 class="meal-name">${escapeHtml(selectedMeal.name)}</h3>
-                                <span class="meal-score">${selectedMeal.finalScore}</span>
-                            </div>
-                            <div class="meal-meta">
-                                <span class="meal-type">${selectedMeal.type}</span>
-                                <span>${formatDate(selectedMeal.date)}</span>
-                            </div>
-                            <div class="meal-factors">
-                                <div class="factor-item" style="background-color: ${getHealthTasteColor(selectedMeal.health)}">
-                                    <div class="factor-icon"></div>
-                                    Health ${selectedMeal.health}
-                                </div>
-                                <div class="factor-item" style="background-color: ${getHealthTasteColor(selectedMeal.taste)}">
-                                    <div class="factor-icon"></div>
-                                    Taste ${selectedMeal.taste}
-                                </div>
-                                <div class="factor-item" style="background-color: ${getPersonalizedTimeColor(selectedMeal.time, selectedMeal.type)}">
-                                    <div class="factor-icon"></div>
-                                    ${selectedMeal.time} min
-                                </div>
-                                <div class="factor-item" style="background-color: ${getPersonalizedCostColor(selectedMeal.cost, selectedMeal.type)}">
-                                    <div class="factor-icon"></div>
-                                    $${selectedMeal.cost.toFixed(2)} PP
-                                </div>
-                            </div>
-                            ${selectedMeal.notes ? `<p class="meal-notes">${escapeHtml(selectedMeal.notes)}</p>` : ''}
-                        </div>
-                    </div>
-                `;
-            }
-            // Move header to very top
-            const mainHeader = document.getElementById('mainApp').querySelector('#otherUserMealsView > .container > div');
-            if (mainHeader) mainHeader.style.marginTop = '0';
-        }
-        window.viewOtherUserMealFull = viewOtherUserMealFull;
-        // Hide modal and show other user meals from follower view
-        async function viewOtherUserMainWithModalHide(uid) {
-            closeProfileModal();
-            closeFollowingModal();
-            await viewOtherUserMain(uid);
-        }
-        window.viewOtherUserMainWithModalHide = viewOtherUserMainWithModalHide;
-        // Hide modal and show other user meal from search listing
-        async function viewOtherUserMealFullWithModalHide(uid, mealId) {
-            closeSearchModal();
-            await viewOtherUserMealFull(uid, mealId);
-        }
-        window.viewOtherUserMealFullWithModalHide = viewOtherUserMealFullWithModalHide;
-        // Follow from followers list and update button to View
-        async function followFromFollowersList(uid, btn) {
-            await toggleFollow(uid, false);
-            btn.textContent = 'View';
-            btn.onclick = function() {
-                const mainContent = document.querySelector('.main-content');
-                if (mainContent) mainContent.style.display = 'block';
-                viewOtherUserMainFromButton(uid);
-            };
-        }
-        window.followFromFollowersList = followFromFollowersList;
-        // Following list modal logic
-        function showFollowingList() {
-            document.getElementById('followingModal').classList.add('active');
-            loadFollowingList();
-        }
-        function closeFollowingModal() {
-            document.getElementById('followingModal').classList.remove('active');
-        }
-        async function loadFollowingList() {
-            if (!currentUser) return;
-            const userRef = doc(db, 'users', currentUser.uid);
-            const userDocSnap = await getDoc(userRef);
-            let following = [];
-            if (userDocSnap.exists()) {
-                const data = userDocSnap.data();
-                following = data.following || [];
-            }
-            if (following.length === 0) {
-                document.getElementById('followingList').innerHTML = '<div style="color:#888;">You are not following anyone.</div>';
-                return;
-            }
-            // Fetch all user profiles
-            const usersQuery = await getDocs(collection(db, 'users'));
-            const followingProfiles = [];
-            usersQuery.forEach(docSnap => {
-                const data = docSnap.data();
-                if (data.profile && following.includes(data.profile.uid)) {
-                    followingProfiles.push(data.profile);
-                }
-            });
-            document.getElementById('followingList').innerHTML = followingProfiles.map(f => {
-                return `
-                    <div style='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee;'>
-                        <img src='${f.photoURL || ''}' alt='Avatar' style='width:32px;height:32px;border-radius:50%;object-fit:cover;background:#eee;'>
-                        <div style='flex:1;'>
-                            <div style='font-weight:500;'>${escapeHtml(f.displayName || f.email)}</div>
-                            <div style='color:#888;font-size:0.9rem;'>${escapeHtml(f.email)}</div>
-                        </div>
-                        <button class="btn btn-primary btn-small" onclick="viewOtherUserMainFromButton('${f.uid}')">View</button>
-                        <button class="btn btn-secondary btn-small" onclick="unfollowFromFollowingList('${f.uid}', this)">Unfollow</button>
-                    </div>
-                `;
-            }).join('');
-        }
-        window.showFollowingList = showFollowingList;
-        window.closeFollowingModal = closeFollowingModal;
-        async function unfollowFromFollowingList(uid, btn) {
-            await toggleFollow(uid, true);
-            btn.parentElement.remove();
-        }
-        window.unfollowFromFollowingList = unfollowFromFollowingList;
-
-        // Add this function near updateStats
-        function updateStatsForMeals(mealsArr) {
-            document.getElementById('totalMeals').textContent = mealsArr.length;
-            if (mealsArr.length > 0) {
-                const avgScore = Math.round(
-                    mealsArr.reduce((sum, m) => sum + m.finalScore, 0) / mealsArr.length
-                );
-                document.getElementById('avgScore').textContent = avgScore;
-                const best = mealsArr.reduce((best, m) => m.finalScore > best.finalScore ? m : best);
-                document.getElementById('bestMeal').textContent = 
-                    best.name.length > 15 ? best.name.substring(0, 15) + '...' : best.name;
-            } else {
-                document.getElementById('avgScore').textContent = '0';
-                document.getElementById('bestMeal').textContent = '—';
-            }
-        }
-
-        // New function to show other user meals in a unified way
-        async function showOtherUserMeals(userId) {
-            // Hide your own meal UI
-            document.getElementById('mainApp').querySelector('.form-section').classList.add('hidden');
-            document.getElementById('mainApp').querySelector('.meals-section').classList.add('hidden');
-            document.getElementById('mealsContainer').classList.add('hidden');
-            // Show other user meal UI
-            document.getElementById('otherUserMealsView').classList.remove('hidden');
-            document.getElementById('otherUserMealsView').style.display = 'block';
-            const container = document.getElementById('otherUserMealsContainer');
-            container.innerHTML = '';
-            container.style.display = 'block';
-            // Fetch user profile
-            const userDoc = await getDoc(doc(db, 'users', userId));
-            let profile = { displayName: '', email: '', photoURL: '', followers: [], following: [] };
-            if (userDoc.exists()) {
-                const data = userDoc.data();
-                if (data.profile) {
-                    profile = { ...profile, ...data.profile };
-                }
-                profile.followers = data.followers || [];
-                profile.following = data.following || [];
-            }
-            document.getElementById('otherUserEmail').textContent = profile.email || '';
-            document.getElementById('otherUserMealsTitle').textContent = `${profile.displayName || profile.email || 'User'}'s Meals`;
-            // Show/hide unfollow button
-            let showUnfollow = false;
-            if (currentUser && profile.followers && profile.followers.includes(currentUser.uid)) showUnfollow = true;
-            const unfollowBtn = document.getElementById('unfollowOtherUserBtn');
-            if (unfollowBtn) {
-                if (showUnfollow) {
-                    unfollowBtn.style.display = '';
-                    unfollowBtn.onclick = async function() {
-                        await toggleFollow(userId, true);
-                        unfollowBtn.style.display = 'none';
-                    };
-                } else {
-                    unfollowBtn.style.display = 'none';
-                }
-            }
-            // Fetch meals
-            const mealsCol = collection(db, 'users', userId, 'meals');
-            const mealsSnap = await getDocs(mealsCol);
-            const userMeals = [];
-            mealsSnap.forEach(docSnap => {
-                const meal = docSnap.data();
-                userMeals.push({ ...meal, id: docSnap.id });
-            });
-            userMeals.sort((a, b) => b.finalScore - a.finalScore);
-            // Update metrics
-            updateStatsForMeals(userMeals);
-            // Render cards using the same layout as your own main screen (without edit/delete)
-            if (userMeals.length === 0) {
-                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;">No meals to show.</div>';
-            } else {
-                container.innerHTML = userMeals.map(meal => `
-                    <div class="meal-card">
-                        <img src="${meal.image || ''}" alt="${escapeHtml(meal.name)}" class="meal-image">
-                        <div class="meal-info">
-                            <div class="meal-header">
-                                <h3 class="meal-name">${escapeHtml(meal.name)}</h3>
-                                <span class="meal-score">${meal.finalScore}</span>
-                            </div>
-                            <div class="meal-meta">
-                                <span class="meal-type">${meal.type}</span>
-                                <span>${formatDate(meal.date)}</span>
-                            </div>
-                            <div class="meal-factors">
-                                <div class="factor-item" style="background-color: ${getHealthTasteColor(meal.health)}">
-                                    <div class="factor-icon"></div>
-                                    Health ${meal.health}
-                                </div>
-                                <div class="factor-item" style="background-color: ${getHealthTasteColor(meal.taste)}">
-                                    <div class="factor-icon"></div>
-                                    Taste ${meal.taste}
-                                </div>
-                                <div class="factor-item" style="background-color: ${getPersonalizedTimeColor(meal.time, meal.type)}">
-                                    <div class="factor-icon"></div>
-                                    ${meal.time} min
-                                </div>
-                                <div class="factor-item" style="background-color: ${getPersonalizedCostColor(meal.cost, meal.type)}">
-                                    <div class="factor-icon"></div>
-                                    $${meal.cost.toFixed(2)} PP
-                                </div>
-                            </div>
-                            ${meal.notes ? `<p class="meal-notes">${escapeHtml(meal.notes)}</p>` : ''}
-                        </div>
-                    </div>
-                `).join('');
-            }
-            // Force visibility for debugging
-            container.style.display = 'block';
-            if (container.parentElement) container.parentElement.style.display = 'block';
-            document.getElementById('otherUserMealsView').style.display = 'block';
-            // If still not visible, check for duplicate IDs or hidden parents
-        }
-
-        // Add this global function near other window.* assignments
-        window.viewOtherUserMainFromButton = function(uid) {
-            console.log('[DEBUG] viewOtherUserMainFromButton called for uid:', uid);
-            // Hide any open modals
-            document.getElementById('profileModal')?.classList.remove('active');
-            document.getElementById('followingModal')?.classList.remove('active');
-            document.getElementById('searchModal')?.classList.remove('active');
-            // Clear search input and results
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchResults').innerHTML = '';
-            document.getElementById('searchProfileView').innerHTML = '';
-            // Set main-content to block for other user view
-            const mainContent = document.querySelector('.main-content');
-            if (mainContent) mainContent.style.display = 'block';
-            viewOtherUserMain(uid);
-        };
-    </script>
-</body>
-</html>
