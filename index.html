@@ -15,6 +15,9 @@
     <title>Dishrated - Track Your Culinary Adventures</title>
     <link rel="icon" type="image/jpeg" href="logo.jpg">
     <link rel="shortcut icon" type="image/jpeg" href="logo.jpg">
+            <!-- If you have a dedicated favicon file (favicon.ico or .png), it's best to add it explicitly: -->
+            <!-- <link rel="icon" href="/favicon.ico" sizes="any"> -->
+            <!-- <link rel="icon" type="image/png" href="/favicon.png"> -->
     <style>
         * {
             margin: 0;
@@ -89,7 +92,7 @@
         }
 
         .logo {
-            width: 48px;
+            width:80px;
             height: 48px;
             border-radius: 12px;
             display: flex;
@@ -1144,6 +1147,12 @@
                             </svg>
                             Search
                         </button>
+                        <a href="https://linktr.ee/dishrated" target="_blank" class="settings-btn" rel="noopener noreferrer">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2l2.39 4.84L20 8.27l-3.9 3.8L17.48 18 12 15.27 6.52 18l1.38-5.93L4 8.27l5.61-1.43L12 2z"/>
+                            </svg>
+                            Follow @DishRated
+                        </a>
                         <button id="logoutBtn" class="logout-btn">
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
@@ -1379,14 +1388,7 @@
                         <div class="pagination-info">
                             <span id="paginationInfo"></span>
                         </div>
-                        <div class="social-links">
-                            <a href="https://linktr.ee/dishrated" target="_blank" class="social-link">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 2L13.09 8.26L19 7L15.74 12L19 17L13.09 15.74L12 22L10.91 15.74L5 17L8.26 12L5 7L10.91 8.26L12 2Z"/>
-                                </svg>
-                                Follow @DishRated
-                            </a>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -1447,6 +1449,23 @@
                     <div id="modalNotesContainer" class="hidden">
                         <p><strong>Notes:</strong></p>
                         <p id="modalNotes"></p>
+                    </div>
+
+                    <div style="margin-top:15px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                        <button id="aiReviewBtn" class="btn btn-primary btn-small" type="button">AI Review</button>
+                        <span id="aiReviewStatus" style="color:#666;font-size:0.9rem;"></span>
+                    </div>
+                    <div id="aiReviewContainer" class="hidden" style="margin-top:10px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:12px;">
+                        <div style="font-weight:600;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;">
+                            <span>AI Review</span>
+                            <span id="aiScoreDisplay" style="color:var(--primary);font-weight:700;"></span>
+                        </div>
+                        <div id="aiReviewText" style="color:#374151; white-space:pre-line;"></div>
+                        <div id="aiScoreEditRow" class="hidden" style="margin-top:10px;display:flex;gap:8px;align-items:center;">
+                            <label for="aiScoreInput" style="font-size:0.9rem;color:#666;">Adjust AI Score (0-100):</label>
+                            <input id="aiScoreInput" type="number" min="0" max="100" step="1" style="width:100px;padding:6px;border:1px solid #ddd;border-radius:6px;">
+                            <button id="aiScoreSaveBtn" class="btn btn-primary btn-small" type="button">Save AI Score</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1515,25 +1534,25 @@
             <div class="modal-body">
                 <p>Share your amazing meal rating with the world!</p>
                 <div class="share-options">
-                    <button class="share-btn" onclick="shareToTwitter()">
+                    <button class="share-btn" type="button" onclick="shareToTwitter(event)">
                         <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                         </svg>
                         <span>Twitter</span>
                     </button>
-                    <button class="share-btn" onclick="shareToFacebook()">
+                    <button class="share-btn" type="button" onclick="shareToFacebook(event)">
                         <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                         </svg>
                         <span>Facebook</span>
                     </button>
-                    <button class="share-btn" onclick="shareToInstagram()">
+                    <button class="share-btn" type="button" onclick="shareToInstagram(event)">
                         <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                         </svg>
                         <span>Instagram</span>
                     </button>
-                    <button class="share-btn" onclick="shareToLinkedIn()">
+                    <button class="share-btn" type="button" onclick="shareToLinkedIn(event)">
                         <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                         </svg>
@@ -1569,7 +1588,7 @@
 
         //sammon
 
-   // Firebase configuration
+//    // Firebase configuration
    const firebaseConfig = {
             apiKey: "AIzaSyAQ0dDaPSWltCzr4iG3I6W-z18ZKYy8FKY",
             authDomain: "dishrated.firebaseapp.com",
@@ -1579,10 +1598,6 @@
             appId: "1:339787751185:web:3237655cd143ffdc1336b0",
             measurementId: "G-RQ9P62ZB3J"
         };
-
-
-// danish
-
 
 
 
@@ -1621,40 +1636,81 @@
         }
 
         function closeShareModal() {
-            document.getElementById('shareModal').classList.remove('active');
-            shareableMeal = null;
+            const modal = document.getElementById('shareModal');
+            if (modal) modal.classList.remove('active');
+            // keep shareableMeal so buttons still work if user re-opens quickly
         }
 
-        function shareToTwitter() {
-            if (!shareableMeal) return;
-            const text = `Just rated "${shareableMeal.name}" on DishRated! 🍽️\n\n⭐ Score: ${shareableMeal.finalScore}/100\n🥗 Health: ${shareableMeal.health}\n😋 Taste: ${shareableMeal.taste}\n⏱️ Time: ${shareableMeal.time} min\n💰 Cost: $${shareableMeal.cost}\n\nTrack your meals at DishRated!`;
+        // Build a meal object from current context if none was explicitly set
+        function getCurrentShareMeal() {
+            if (shareableMeal) return shareableMeal;
+            const modal = document.getElementById('mealModal');
+            if (modal && modal.classList.contains('active')) {
+                // Pull data from the meal details modal
+                const name = document.getElementById('modalTitle')?.textContent?.trim() || 'My Meal';
+                const finalScore = parseInt(document.getElementById('modalFinalScore')?.textContent || '0', 10) || 0;
+                const health = parseInt(document.getElementById('modalHealthValue')?.textContent || '0', 10) || 0;
+                const taste = parseInt(document.getElementById('modalTasteValue')?.textContent || '0', 10) || 0;
+                const time = parseInt((document.getElementById('modalTimeValue')?.textContent || '0').toString().replace(/\D/g, ''), 10) || 0;
+                const cost = parseFloat((document.getElementById('modalCostValue')?.textContent || '0').toString().replace(/[^0-9.]/g, '')) || 0;
+                return { name, finalScore, health, taste, time, cost };
+            }
+            // Fallback to top meal if available
+            if (Array.isArray(meals) && meals.length > 0) {
+                const m = meals[0];
+                return { name: m.name, finalScore: m.finalScore, health: m.health, taste: m.taste, time: m.time, cost: m.cost };
+            }
+            return null;
+        }
+
+        function shareToTwitter(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            const meal = getCurrentShareMeal();
+            if (!meal) { alert('Select a meal to share.'); return; }
+            const text = `Just rated "${meal.name}" on DishRated! 🍽️\n\n⭐ Score: ${meal.finalScore}/100\n🥗 Health: ${meal.health}\n😋 Taste: ${meal.taste}\n⏱️ Time: ${meal.time} min\n💰 Cost: $${meal.cost}\n\nTrack your meals at DishRated!`;
             const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-            window.open(url, '_blank');
+            const w = window.open(url, '_blank', 'noopener');
             closeShareModal();
         }
 
-        function shareToFacebook() {
-            if (!shareableMeal) return;
-            const text = `Just rated "${shareableMeal.name}" on DishRated! Score: ${shareableMeal.finalScore}/100. Track your culinary adventures at DishRated!`;
-            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(text)}`;
-            window.open(url, '_blank');
+        function shareToFacebook(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            const meal = getCurrentShareMeal();
+            if (!meal) { alert('Select a meal to share.'); return; }
+            const text = `Just rated "${meal.name}" on DishRated! Score: ${meal.finalScore}/100. Track your culinary adventures at DishRated!`;
+            // Use a stable URL to avoid blocked popups in local files
+            const pageUrl = window.location.origin && window.location.origin !== 'null' ? window.location.href : 'https://dishrated.app';
+            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}&quote=${encodeURIComponent(text)}`;
+            const w = window.open(url, '_blank', 'noopener');
             closeShareModal();
         }
 
-        function shareToInstagram() {
-            if (!shareableMeal) return;
-            alert('📱 Instagram Sharing Tip:\n\nCopy this text and share it with your meal photo on Instagram:\n\n' + 
-                  `"Just rated "${shareableMeal.name}" on DishRated! 🍽️ Score: ${shareableMeal.finalScore}/100 ⭐ #DishRated #FoodReview #Foodie"`);
+        function shareToInstagram(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            const meal = getCurrentShareMeal();
+            if (!meal) { alert('Select a meal to share.'); return; }
+            const copyText = `"Just rated \"${meal.name}\" on DishRated! 🍽️ Score: ${meal.finalScore}/100 ⭐ #DishRated #FoodReview #Foodie"`;
+            alert('📱 Instagram Sharing Tip:\n\nCopy this text and share it with your meal photo on Instagram:\n\n' + copyText);
             closeShareModal();
         }
 
-        function shareToLinkedIn() {
-            if (!shareableMeal) return;
-            const text = `Just rated "${shareableMeal.name}" on DishRated! Score: ${shareableMeal.finalScore}/100. Tracking my culinary journey one meal at a time.`;
-            const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&summary=${encodeURIComponent(text)}`;
-            window.open(url, '_blank');
+        function shareToLinkedIn(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            const meal = getCurrentShareMeal();
+            if (!meal) { alert('Select a meal to share.'); return; }
+            const text = `Just rated "${meal.name}" on DishRated! Score: ${meal.finalScore}/100. Tracking my culinary journey one meal at a time.`;
+            const pageUrl = window.location.origin && window.location.origin !== 'null' ? window.location.href : 'https://dishrated.app';
+            const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl)}&summary=${encodeURIComponent(text)}`;
+            const w = window.open(url, '_blank', 'noopener');
             closeShareModal();
         }
+
+        // Expose share handlers for inline onclicks
+        window.shareToTwitter = shareToTwitter;
+        window.shareToFacebook = shareToFacebook;
+        window.shareToInstagram = shareToInstagram;
+        window.shareToLinkedIn = shareToLinkedIn;
+        window.closeShareModal = closeShareModal;
 
         // Pagination functions
         function changePage(direction) {
@@ -1680,9 +1736,10 @@
 
         function getFilteredMeals() {
             // Filter meals based on selected meal type
-            let filteredMeals = currentFilter === 'all' ? 
+            const normalizedFilter = String(currentFilter || 'all').toLowerCase();
+            let filteredMeals = normalizedFilter === 'all' ? 
                 meals : 
-                meals.filter(m => m.type === currentFilter);
+                meals.filter(m => (m.type || '').toLowerCase() === normalizedFilter);
             
             // Sort meals based on selected rating criteria
             filteredMeals.sort((a, b) => {
@@ -1751,6 +1808,8 @@
         let userAvgTime = { breakfast: 15, lunch: 25, dinner: 40 };
         let duplicateMealId = null;
         let pendingMealData = null;
+        // Track which user's meals are currently being viewed (null = my own)
+        let currentViewedUserId = null;
 
         // DOM elements
         const authScreen = document.getElementById('authScreen');
@@ -1873,15 +1932,25 @@
             document.getElementById('filterMeals').addEventListener('change', (e) => {
                 currentFilter = e.target.value;
                 currentPage = 1; // Reset to first page
+                if (window.viewingOtherUser && typeof window._renderOtherUserMealsFiltered === 'function') {
+                    window._renderOtherUserMealsFiltered();
+                } else {
+                    window.viewingOtherUser = false;
                 renderMeals();
                 updateStats();
+                }
             });
 
             document.getElementById('sortRatings').addEventListener('change', (e) => {
                 currentSortBy = e.target.value;
                 currentPage = 1; // Reset to first page
+                if (window.viewingOtherUser && typeof window._renderOtherUserMealsFiltered === 'function') {
+                    window._renderOtherUserMealsFiltered();
+                } else {
+                    window.viewingOtherUser = false;
                 renderMeals();
                 updateStats();
+                }
             });
 
             // The filterAll dropdown doesn't need functionality since it just shows all
@@ -2212,8 +2281,8 @@
                 // Show share modal for new meals (not edits)
                 if (!editingMealId) {
                     setTimeout(() => {
-                        showShareModal(pendingMealData);
-                    }, 500); // Small delay to let the UI update
+                        try { showShareModal(pendingMealData); } catch (_) {}
+                    }, 200);
                 }
                 
             } catch (error) {
@@ -2568,7 +2637,17 @@
 
         // Render meals
         function renderMeals() {
-            if (window.viewingOtherUser) return;
+            if (window.viewingOtherUser || currentViewedUserId) {
+                // Ensure own UI is visible and other view hidden when rendering own meals
+                const otherView = document.getElementById('otherUserMealsView');
+                if (otherView) otherView.classList.add('hidden');
+                const mainMealsSection = document.querySelector('#mainApp .meals-section');
+                if (mainMealsSection) mainMealsSection.classList.remove('hidden');
+                const formSection = document.querySelector('#mainApp .form-section');
+                if (formSection) formSection.classList.remove('hidden');
+                window.viewingOtherUser = false;
+                currentViewedUserId = null;
+            }
             const container = document.getElementById('mealsContainer');
             container.classList.remove('other-user-grid');
             container.classList.remove('horizontal-scroll');
@@ -2642,9 +2721,10 @@
 
         // Update statistics
         function updateStats() {
-            const filteredMeals = currentFilter === 'all' ? 
+            const normalizedFilter = String(currentFilter || 'all').toLowerCase();
+            const filteredMeals = normalizedFilter === 'all' ? 
                 meals : 
-                meals.filter(m => m.type === currentFilter);
+                meals.filter(m => (m.type || '').toLowerCase() === normalizedFilter);
             
             document.getElementById('totalMeals').textContent = filteredMeals.length;
             
@@ -2739,11 +2819,29 @@
                 document.getElementById('modalNotesContainer').classList.add('hidden');
             }
             document.getElementById('mealModal').classList.add('active');
+            // Wire AI review button for own meals
+            const statusEl = document.getElementById('aiReviewStatus');
+            const containerEl = document.getElementById('aiReviewContainer');
+            const textEl = document.getElementById('aiReviewText');
+            const scoreDisp = document.getElementById('aiScoreDisplay');
+            const scoreInput = document.getElementById('aiScoreInput');
+            const scoreRow = document.getElementById('aiScoreEditRow');
+            if (statusEl) statusEl.textContent = '';
+            if (containerEl) containerEl.classList.add('hidden');
+            if (textEl) textEl.textContent = '';
+            if (scoreDisp) scoreDisp.textContent = '';
+            if (scoreInput) scoreInput.value = '';
+            if (scoreRow) scoreRow.classList.add('hidden');
+            const aiBtn = document.getElementById('aiReviewBtn');
+            if (aiBtn) {
+                aiBtn.onclick = () => runAiReviewForMeal(meal);
+            }
         }
 
         // Close modal
         function closeModal() {
-            document.getElementById('mealModal').classList.remove('active');
+            const modal = document.getElementById('mealModal');
+            if (modal) modal.classList.remove('active');
         }
 
         // Online/Offline Detection
@@ -2823,6 +2921,9 @@
             document.getElementById('searchModal').classList.add('active');
             document.getElementById('searchInput').value = '';
             document.getElementById('searchProfileView').innerHTML = '';
+            // Ensure meals list is hidden for search context
+            const mealsListInSearch = document.getElementById('searchProfileMeals');
+            if (mealsListInSearch) mealsListInSearch.innerHTML = '';
             document.getElementById('searchInput').focus();
             
             // Load all users initially
@@ -2843,22 +2944,29 @@
                         <div style="flex:1;">
                             <div style="font-weight:600;color:#333;">${escapeHtml(u.displayName || u.email)}</div>
                             <div style="color:#666;font-size:0.9rem;">${escapeHtml(u.email)}</div>
-                            <div style="color:#888;font-size:0.8rem;">${u.followerCount} follower${u.followerCount === 1 ? '' : 's'}</div>
+                            <div style="color:#888;font-size:0.8rem;">
+                                ${u.followerCount} follower${u.followerCount === 1 ? '' : 's'} · 
+                                <span id="mealCount-${u.uid}">—</span> meals
                         </div>
-                        <button class="btn btn-primary btn-small" onclick="showSearchProfile('${u.uid}')">View</button>
+                        </div>
+                        <button class="btn btn-primary btn-small" onclick="viewOtherUserMainFromButton('${u.uid}')">View Profile</button>
                     </div>
                 `).join('')}
             `;
+            await populateMealCounts(users);
         }
         function closeSearchModal() {
-            document.getElementById('searchModal').classList.remove('active');
+            const modal = document.getElementById('searchModal');
+            if (modal) modal.classList.remove('active');
         }
         function openProfileModal(user) {
-            document.getElementById('profileModal').classList.add('active');
+            const modal = document.getElementById('profileModal');
+            if (modal) modal.classList.add('active');
             loadProfile(user);
         }
         function closeProfileModal() {
-            document.getElementById('profileModal').classList.remove('active');
+            const modal = document.getElementById('profileModal');
+            if (modal) modal.classList.remove('active');
         }
         // Search users in Firestore
         async function searchUsers(query) {
@@ -2893,6 +3001,25 @@
             results.sort((a, b) => b.followerCount - a.followerCount);
             return results;
         }
+
+        // Populate meal counts next to each user in search results
+        async function populateMealCounts(users) {
+            try {
+                await Promise.all(users.map(async (u) => {
+                    try {
+                        const mealsCol = collection(db, 'users', u.uid, 'meals');
+                        const mealsSnap = await getDocs(mealsCol);
+                        const el = document.getElementById(`mealCount-${u.uid}`);
+                        if (el) el.textContent = mealsSnap.size;
+                    } catch (_) {
+                        const el = document.getElementById(`mealCount-${u.uid}`);
+                        if (el) el.textContent = '0';
+                    }
+                }));
+            } catch (_) {
+                // ignore
+            }
+        }
         // Render search results
         async function handleSearchInput(e) {
             const query = e.target.value.trim();
@@ -2916,12 +3043,16 @@
                         <div style="flex:1;">
                             <div style="font-weight:600;color:#333;">${escapeHtml(u.displayName || u.email)}</div>
                             <div style="color:#666;font-size:0.9rem;">${escapeHtml(u.email)}</div>
-                            <div style="color:#888;font-size:0.8rem;">${u.followerCount} follower${u.followerCount === 1 ? '' : 's'}</div>
+                            <div style="color:#888;font-size:0.8rem;">
+                                ${u.followerCount} follower${u.followerCount === 1 ? '' : 's'} · 
+                                <span id="mealCount-${u.uid}">—</span> meals
                         </div>
-                        <button class="btn btn-primary btn-small" onclick="showSearchProfile('${u.uid}')">View</button>
+                        </div>
+                        <button class="btn btn-primary btn-small" onclick="viewOtherUserMainFromButton('${u.uid}')">View Profile</button>
                     </div>
                 `).join('')}
             `;
+            await populateMealCounts(users);
         }
         document.getElementById('searchInput').addEventListener('input', debounce(handleSearchInput, 400));
         // Debounce helper
@@ -3018,17 +3149,36 @@
             console.log('[DEBUG] Entering viewOtherUserMain for userId:', userId);
             if (currentUser && userId === currentUser.uid) {
                 window.viewingOtherUser = false;
+                currentViewedUserId = null;
+            const mainMealsSection = document.querySelector('#mainApp .meals-section');
+            if (mainMealsSection) mainMealsSection.classList.remove('hidden');
                 document.getElementById('mainApp').querySelector('.form-section').classList.remove('hidden');
                 document.getElementById('mealsContainer').classList.remove('hidden');
                 document.getElementById('otherUserInfoBar')?.remove();
+            const otherView = document.getElementById('otherUserMealsView');
+            if (otherView) otherView.classList.add('hidden');
+                // Restore your own filter dropdown listeners
+                const filterMealsDropdown = document.getElementById('filterMeals');
+                const sortRatingsDropdown = document.getElementById('sortRatings');
+                if (filterMealsDropdown) filterMealsDropdown.onchange = null;
+                if (sortRatingsDropdown) sortRatingsDropdown.onchange = null;
+            document.getElementById('filterMeals').value = 'all';
+            document.getElementById('sortRatings').value = 'finalScore';
+            currentFilter = 'all';
+            currentSortBy = 'finalScore';
                 renderMeals();
                 updateStats();
                 console.log('[DEBUG] Returned to own meals view (self)');
                 return;
             }
             window.viewingOtherUser = true;
+            currentViewedUserId = userId;
             document.getElementById('mainApp').querySelector('.form-section').classList.add('hidden');
+            document.getElementById('mainApp').querySelector('.meals-section').classList.remove('hidden');
             document.getElementById('mealsContainer').classList.remove('hidden');
+            // Hide my pagination while viewing other user
+            const myPagination = document.getElementById('pagination');
+            if (myPagination) myPagination.classList.add('hidden');
             // Place info bar above stats
             let infoBar = document.getElementById('otherUserInfoBar');
             if (infoBar) infoBar.remove(); // Remove any existing bar to avoid duplicates
@@ -3101,6 +3251,8 @@
             // Filtering and sorting logic for other user view
             let filter = 'all';
             let sortBy = 'finalScore';
+            let otherCurrentPage = 1;
+            const otherMealsPerPage = mealsPerPage || 10;
             
             // Update dropdown listeners for other user view
             const filterMealsDropdown = document.getElementById('filterMeals');
@@ -3123,8 +3275,23 @@
                     renderOtherUserMealsFiltered();
                 };
             }
+            // Ensure we have a pagination container for other user
+            let otherPagination = document.getElementById('otherUserPagination');
+            if (!otherPagination) {
+                otherPagination = document.createElement('div');
+                otherPagination.id = 'otherUserPagination';
+                otherPagination.className = 'pagination';
+                const parentContainer = document.querySelector('#otherUserMealsView .container');
+                // insert after meals grid section
+                parentContainer.appendChild(otherPagination);
+            }
             function renderOtherUserMealsFiltered() {
+                if (!window.viewingOtherUser) return;
                 let filteredMeals = filter === 'all' ? userMeals : userMeals.filter(m => m.type === filter);
+                // Normalize case for robust filtering
+                if (filter !== 'all') {
+                    filteredMeals = userMeals.filter(m => (m.type || '').toLowerCase() === String(filter).toLowerCase());
+                }
                 
                 // Sort meals based on selected rating criteria
                 filteredMeals.sort((a, b) => {
@@ -3150,10 +3317,17 @@
                     container.classList.remove('other-user-grid');
                     container.classList.remove('horizontal-scroll');
                 }
-                if (filteredMeals.length === 0) {
+                // Pagination for other user
+                const totalPages = Math.ceil(filteredMeals.length / otherMealsPerPage) || 1;
+                if (otherCurrentPage > totalPages) otherCurrentPage = totalPages;
+                const startIndex = (otherCurrentPage - 1) * otherMealsPerPage;
+                const endIndex = startIndex + otherMealsPerPage;
+                const paginatedMeals = filteredMeals.slice(startIndex, endIndex);
+
+                if (paginatedMeals.length === 0) {
                 container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;">No meals to show.</div>';
             } else {
-                    container.innerHTML = filteredMeals.map(meal => `
+                    container.innerHTML = paginatedMeals.map(meal => `
                         <div class="meal-card">
                             <img src="${meal.image || ''}" alt="${escapeHtml(meal.name)}" class="meal-image">
                             <div class="meal-info">
@@ -3188,17 +3362,84 @@
                     </div>
                 `).join('');
             }
+                // Render other user's pagination
+                renderOtherPagination(filteredMeals, totalPages);
                 console.log('[DEBUG] Rendered other user meals, count:', filteredMeals.length);
             }
+            function renderOtherPagination(filteredMeals, totalPages) {
+                if (!otherPagination) return;
+                if (filteredMeals.length <= otherMealsPerPage) {
+                    otherPagination.classList.add('hidden');
+                    otherPagination.innerHTML = '';
+                    return;
+                }
+                otherPagination.classList.remove('hidden');
+                otherPagination.innerHTML = '';
+                // Prev
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'pagination-btn';
+                prevBtn.textContent = 'Previous';
+                prevBtn.disabled = otherCurrentPage === 1;
+                prevBtn.addEventListener('click', () => { if (otherCurrentPage > 1) { otherCurrentPage--; renderOtherUserMealsFiltered(); } });
+                otherPagination.appendChild(prevBtn);
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === 1 || i === totalPages || (i >= otherCurrentPage - 2 && i <= otherCurrentPage + 2)) {
+                        const pageBtn = document.createElement('button');
+                        pageBtn.className = `pagination-btn ${i === otherCurrentPage ? 'active' : ''}`;
+                        pageBtn.textContent = String(i);
+                        pageBtn.addEventListener('click', () => { otherCurrentPage = i; renderOtherUserMealsFiltered(); });
+                        otherPagination.appendChild(pageBtn);
+                    } else if (i === otherCurrentPage - 3 || i === otherCurrentPage + 3) {
+                        const dots = document.createElement('span');
+                        dots.textContent = '...';
+                        dots.className = 'pagination-info';
+                        otherPagination.appendChild(dots);
+                    }
+                }
+                // Next
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'pagination-btn';
+                nextBtn.textContent = 'Next';
+                nextBtn.disabled = otherCurrentPage === totalPages;
+                nextBtn.addEventListener('click', () => { if (otherCurrentPage < totalPages) { otherCurrentPage++; renderOtherUserMealsFiltered(); } });
+                otherPagination.appendChild(nextBtn);
+                // Info
+                const info = document.createElement('div');
+                info.className = 'pagination-info';
+                const startItem = (otherCurrentPage - 1) * otherMealsPerPage + 1;
+                const endItem = Math.min(otherCurrentPage * otherMealsPerPage, filteredMeals.length);
+                info.textContent = `${startItem}-${endItem} of ${filteredMeals.length} meals`;
+                otherPagination.appendChild(info);
+            }
             renderOtherUserMealsFiltered();
+            // expose for global filter handler
+            window._renderOtherUserMealsFiltered = renderOtherUserMealsFiltered;
             console.log('[DEBUG] Finished viewOtherUserMain setup');
         }
         window.viewOtherUserMain = viewOtherUserMain;
         // Back to my meals
         document.getElementById('backToMyMealsBtn').addEventListener('click', () => {
             window.viewingOtherUser = false;
+            currentViewedUserId = null;
+            const filterMealsDropdown = document.getElementById('filterMeals');
+            const sortRatingsDropdown = document.getElementById('sortRatings');
+            if (filterMealsDropdown) filterMealsDropdown.onchange = null;
+            if (sortRatingsDropdown) sortRatingsDropdown.onchange = null;
             document.getElementById('mainApp').querySelector('.form-section').classList.remove('hidden');
             document.getElementById('mealsContainer').classList.remove('hidden');
+            // Ensure other user's dedicated view is hidden when returning
+            const otherView = document.getElementById('otherUserMealsView');
+            if (otherView) otherView.classList.add('hidden');
+            const mainMealsSection = document.querySelector('#mainApp .meals-section');
+            if (mainMealsSection) mainMealsSection.classList.remove('hidden');
+            const otherBar = document.getElementById('otherUserInfoBar');
+            if (otherBar) otherBar.remove();
+            // Reset dropdowns to a safe state
+            document.getElementById('filterMeals').value = 'all';
+            document.getElementById('sortRatings').value = 'finalScore';
+            currentFilter = 'all';
+            currentSortBy = 'finalScore';
             renderMeals();
             updateStats(); // Restore your own stats
         });
@@ -3287,6 +3528,24 @@
                 document.getElementById('modalNotesContainer').classList.add('hidden');
             }
             document.getElementById('mealModal').classList.add('active');
+
+            // Reset AI review UI
+            const statusEl = document.getElementById('aiReviewStatus');
+            const containerEl = document.getElementById('aiReviewContainer');
+            const textEl = document.getElementById('aiReviewText');
+            const scoreDisp = document.getElementById('aiScoreDisplay');
+            const scoreInput = document.getElementById('aiScoreInput');
+            const scoreRow = document.getElementById('aiScoreEditRow');
+            if (statusEl) statusEl.textContent = '';
+            if (containerEl) containerEl.classList.add('hidden');
+            if (textEl) textEl.textContent = '';
+            if (scoreDisp) scoreDisp.textContent = '';
+            if (scoreInput) scoreInput.value = '';
+            if (scoreRow) scoreRow.classList.add('hidden');
+            const aiBtn = document.getElementById('aiReviewBtn');
+            if (aiBtn) {
+                aiBtn.onclick = () => runAiReviewForMeal(meal);
+            }
         }
         window.viewOtherUserMeal = viewOtherUserMeal;
         // Open your own profile
@@ -3296,6 +3555,180 @@
             }
         }
         window.openMyProfile = openMyProfile;
+        
+        // --- AI Review using GitHub Models API ---
+        async function runAiReviewForMeal(meal) {
+            // Validate meal object
+            if (!meal || !meal.name) {
+                console.error('Invalid meal object:', meal);
+                alert('Invalid meal data. Please try again.');
+                return;
+            }
+            
+            const statusEl = document.getElementById('aiReviewStatus');
+            const containerEl = document.getElementById('aiReviewContainer');
+            const textEl = document.getElementById('aiReviewText');
+            const scoreDisp = document.getElementById('aiScoreDisplay');
+            const scoreInput = document.getElementById('aiScoreInput');
+            const scoreRow = document.getElementById('aiScoreEditRow');
+            
+            try {
+                if (statusEl) statusEl.textContent = 'Analyzing meal with AI...';
+                if (containerEl) containerEl.classList.remove('hidden');
+                
+                const prompt = buildHealthPrompt(meal);
+                console.log('AI Review Prompt:', prompt);
+                
+                // Use the GitHub Models API with proper authentication
+                const resp = await fetch('https://models.github.ai/inference/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: 'openai/gpt-4o',
+                        temperature: 0.7,
+                        max_tokens: 600,
+                        top_p: 1,
+                        messages: [
+                            { 
+                                role: 'system', 
+                                content: 'You are a nutrition analyst and food expert. Analyze the meal information and provide a comprehensive health review. Return your response in this exact JSON format: {"score": number, "summary": string, "recommendations": string}. The score should be 0-100 based on nutritional value, balance, and healthiness. The summary should be 2-3 sentences about the meal\'s health profile. The recommendations should be 1-2 sentences with practical tips for improvement.' 
+                            },
+                            { 
+                                role: 'user', 
+                                content: prompt 
+                            }
+                        ]
+                    })
+                });
+                
+                if (!resp.ok) {
+                    const errorText = await resp.text();
+                    console.error('AI API Error:', resp.status, errorText);
+                    throw new Error(`AI service error: ${resp.status} - ${errorText}`);
+                }
+                
+                const data = await resp.json();
+                const content = data?.choices?.[0]?.message?.content || '';
+                
+                console.log('AI Response:', content);
+                
+                // Parse the AI response
+                let parsed = null;
+                let score = null;
+                let summary = '';
+                let recommendations = '';
+                
+                try {
+                    parsed = JSON.parse(content);
+                    if (parsed && typeof parsed === 'object') {
+                        score = typeof parsed.score === 'number' ? Math.max(0, Math.min(100, parsed.score)) : null;
+                        summary = parsed.summary || '';
+                        recommendations = parsed.recommendations || '';
+                    }
+                } catch (parseError) {
+                    console.log('Failed to parse JSON, attempting text extraction:', parseError);
+                    // Fallback: try to extract score from text
+                    const scoreMatch = content.match(/(?:score|rating|health):?\s*(\d{1,3})/i);
+                    score = scoreMatch ? Math.max(0, Math.min(100, parseInt(scoreMatch[1], 10))) : null;
+                    summary = content;
+                }
+                
+                // Update UI
+                if (statusEl) statusEl.textContent = '';
+                if (textEl) {
+                    let displayText = summary;
+                    if (recommendations) {
+                        displayText += '\n\n💡 Recommendations:\n' + recommendations;
+                        textEl.style.whiteSpace = 'pre-line';
+                    }
+                    textEl.textContent = displayText;
+                }
+                
+                if (scoreDisp) scoreDisp.textContent = score != null ? `AI Score: ${score}/100` : '';
+                if (scoreRow) scoreRow.classList.remove('hidden');
+                if (scoreInput && score != null) scoreInput.value = String(score);
+                
+                // Set up save button functionality
+                const saveBtn = document.getElementById('aiScoreSaveBtn');
+                if (saveBtn) {
+                    saveBtn.onclick = async () => {
+                        const newScore = Math.max(0, Math.min(100, parseInt(scoreInput.value || '0', 10)));
+                        if (scoreDisp) scoreDisp.textContent = `AI Score: ${newScore}/100`;
+                        
+                        // Save AI review data to Firestore
+                        try {
+                            const mealRef = doc(db, 'users', currentUser.uid, 'meals', meal.name);
+                            await setDoc(mealRef, { 
+                                aiScore: newScore, 
+                                aiSummary: summary, 
+                                aiRecommendations: recommendations,
+                                aiReviewDate: serverTimestamp(),
+                                updatedAt: serverTimestamp() 
+                            }, { merge: true });
+                            
+                            // Update local meal data
+                            const mealIndex = meals.findIndex(m => m.id === meal.id);
+                            if (mealIndex !== -1) {
+                                meals[mealIndex] = {
+                                    ...meals[mealIndex],
+                                    aiScore: newScore,
+                                    aiSummary: summary,
+                                    aiRecommendations: recommendations,
+                                    aiReviewDate: new Date().toISOString()
+                                };
+                            }
+                            
+                            console.log('AI review saved successfully');
+                            alert('AI review saved successfully!');
+                        } catch (saveError) {
+                            console.error('Error saving AI review:', saveError);
+                            alert('Error saving AI review. Please try again.');
+                        }
+                    };
+                }
+                
+            } catch (err) {
+                console.error('AI Review Error:', err);
+                if (statusEl) statusEl.textContent = `AI analysis failed: ${err.message}. Please try again later.`;
+                if (containerEl) containerEl.classList.add('hidden');
+                
+                // Show more detailed error information
+                if (err.message.includes('401') || err.message.includes('403')) {
+                    alert('Authentication error with AI service. Please check your credentials.');
+                } else if (err.message.includes('429')) {
+                    alert('Rate limit exceeded. Please try again later.');
+                } else if (err.message.includes('500')) {
+                    alert('AI service is temporarily unavailable. Please try again later.');
+                } else {
+                    alert(`AI analysis failed: ${err.message}`);
+                }
+            }
+        }
+
+        function buildHealthPrompt(meal) {
+            // Build a comprehensive description for AI analysis
+            const parts = [];
+            parts.push(`Dish Name: ${meal.name}`);
+            parts.push(`User Ratings:`);
+            parts.push(`- Health Score: ${meal.health}/10`);
+            parts.push(`- Taste Score: ${meal.taste}/10`);
+            parts.push(`- Preparation Time: ${meal.time} minutes`);
+            parts.push(`- Cost: $${meal.cost}`);
+            if (meal.notes && meal.notes.trim()) {
+                parts.push(`Additional Notes: ${meal.notes}`);
+            }
+            parts.push('');
+            parts.push('Please analyze this meal and provide:');
+            parts.push('1. A health score (0-100) based on nutritional value, balance, and healthiness');
+            parts.push('2. A 2-3 sentence summary of the meal\'s health profile');
+            parts.push('3. 1-2 practical recommendations for improvement');
+            parts.push('');
+            parts.push('Consider factors like: nutritional balance, ingredients, cooking methods, portion sizes, and overall dietary health.');
+            
+            return parts.join('\n');
+        }
         // Show user profile and meals in search modal
         async function showSearchProfile(uid) {
             const profileDiv = document.getElementById('searchProfileView');
@@ -3310,60 +3743,21 @@
                 profile.followers = data.followers || [];
                 profile.following = data.following || [];
             }
-            // Check if current user is following
-            let isFollowing = false;
-            if (currentUser && profile.followers.includes(currentUser.uid)) isFollowing = true;
-            let followBtn = '';
-            if (currentUser && currentUser.uid !== uid) {
-                followBtn = `<button class='btn btn-primary btn-small' id='searchFollowBtn'>${isFollowing ? 'Unfollow' : 'Follow'}</button>`;
-            }
+            // Show follower count and meals count only; hide meal list
+            const mealsCol = collection(db, 'users', uid, 'meals');
+            const mealsSnap = await getDocs(mealsCol);
+            const mealCount = mealsSnap.size;
             profileDiv.innerHTML = `
                 <div style='display:flex;align-items:center;gap:15px;margin-bottom:10px;'>
                     <img src='${profile.photoURL || ''}' alt='Avatar' style='width:48px;height:48px;border-radius:50%;object-fit:cover;background:#eee;'>
                     <div style='flex:1;'>
                         <div style='font-weight:500;font-size:1.1rem;'>${escapeHtml(profile.displayName || profile.email)}</div>
                         <div style='color:#888;font-size:0.95rem;'>${escapeHtml(profile.email)}</div>
+                        <div style='color:#666;font-size:0.9rem;margin-top:4px;'>${profile.followers.length} follower${profile.followers.length === 1 ? '' : 's'} · ${mealCount} meals</div>
                     </div>
-                    ${followBtn}
+                    <button class='btn btn-primary btn-small' onclick="viewOtherUserMainFromButton('${uid}')">View Profile</button>
                 </div>
-                <div id='searchProfileMeals'></div>
             `;
-            if (followBtn) {
-                document.getElementById('searchFollowBtn').onclick = async function() {
-                    await toggleFollow(uid, isFollowing);
-                    showSearchProfile(uid);
-                };
-            }
-            // Only show meals if following or self
-            if (isFollowing || (currentUser && currentUser.uid === uid)) {
-                const mealsCol = collection(db, 'users', uid, 'meals');
-                const mealsSnap = await getDocs(mealsCol);
-                const userMeals = [];
-                mealsSnap.forEach(docSnap => {
-                    const meal = docSnap.data();
-                    userMeals.push({ ...meal, id: docSnap.id });
-                });
-                // Sort meals by finalScore descending
-                userMeals.sort((a, b) => b.finalScore - a.finalScore);
-                const mealsDiv = document.getElementById('searchProfileMeals');
-                if (userMeals.length === 0) {
-                    mealsDiv.innerHTML = '<div style="color:#888;">No meals to show.</div>';
-                } else {
-                    mealsDiv.innerHTML = userMeals.map(meal => `
-                        <div style="background:#f9fafb;padding:10px 15px;margin-bottom:10px;border-radius:6px;display:flex;align-items:center;gap:10px;">
-                            <img src="${meal.image || ''}" alt="Meal" style="width:48px;height:48px;border-radius:6px;object-fit:cover;background:#eee;">
-                            <div style="flex:1;">
-                                <div style="font-weight:500;">${escapeHtml(meal.name)}</div>
-                                <div style="color:#888;font-size:0.9rem;">${meal.type} &middot; ${formatDate(meal.date)}</div>
-                            </div>
-                            <span style="font-weight:bold;color:var(--primary);font-size:1.2rem;">${meal.finalScore}</span>
-                            <button class="btn btn-primary btn-small" onclick="viewOtherUserMainFromButton('${uid}')">View</button>
-                        </div>
-                    `).join('');
-                }
-            } else {
-                document.getElementById('searchProfileMeals').innerHTML = '<div style="color:#888;">Follow to see meals.</div>';
-            }
         }
         window.showSearchProfile = showSearchProfile;
         // View a meal from another user's profile in full page
@@ -3641,7 +4035,42 @@
             // Set main-content to block for other user view
             const mainContent = document.querySelector('.main-content');
             if (mainContent) mainContent.style.display = 'block';
+            currentViewedUserId = uid;
             viewOtherUserMain(uid);
+        };
+
+        // Test function for AI review feature
+        window.testAiReview = function() {
+            console.log('🧪 Testing AI Review Feature...');
+            
+            // Create a test meal object
+            const testMeal = {
+                id: 'test-meal-123',
+                name: 'Grilled Chicken Salad',
+                health: 8,
+                taste: 9,
+                time: 25,
+                cost: 12.50,
+                type: 'Healthy',
+                notes: 'Mixed greens with grilled chicken, cherry tomatoes, and balsamic vinaigrette'
+            };
+            
+            console.log('Test meal object:', testMeal);
+            console.log('Current user:', currentUser);
+            console.log('Meals array:', meals);
+            
+            // Test the buildHealthPrompt function
+            const prompt = buildHealthPrompt(testMeal);
+            console.log('Generated prompt:', prompt);
+            
+            // Test the AI review function
+            if (currentUser) {
+                console.log('✅ User is authenticated, running AI review...');
+                runAiReviewForMeal(testMeal);
+            } else {
+                console.log('❌ User not authenticated');
+                alert('Please sign in first to test the AI review feature.');
+            }
         };
     </script>
 </body>
